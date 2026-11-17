@@ -1,0 +1,46 @@
+// Single source for every per-IB value. Components never hardcode these.
+// TODO_CONFIRM = sample value / draft copy that needs sign-off before publishing.
+
+export type OfferMode = 'bonus' | 'account'
+export type AccountKey = 'starter' | 'ecn' | 'pro' | 'goldflex'
+
+export const ACCOUNTS: Record<AccountKey, { name: string; className: string }> = {
+  starter: { name: 'Starter', className: 'acc-starter' },
+  ecn: { name: 'ECN', className: 'acc-ecn' },
+  pro: { name: 'Pro', className: 'acc-pro' },
+  goldflex: { name: 'GoldFlex', className: 'acc-goldflex' },
+}
+
+export const ib = {
+  name: 'ترانه اکبری', // sample name from the wireframe
+  initials: 'ت‌ا',
+  logo: null as string | null, // IB logo URL; null shows the text mark
+  photo: null as string | null, // IB portrait URL; null shows the placeholder
+  bio: 'از ۱۳۹۸ بازار طلا و فارکس را دنبال می‌کنم و تحلیل‌هایم را در کانال تلگرامم منتشر می‌کنم.', // TODO_CONFIRM per IB
+  // TODO_CONFIRM: replace with this IB's approved ClientX link before publishing
+  panelUrl: 'https://my.wingomarkets.com/register?ib=SAMPLE',
+}
+
+export const offer = {
+  account: 'pro' as AccountKey,
+  minDeposit: '۱۰۰ دلار', // TODO_CONFIRM
+  deadline: '۳۰ آذر ۱۴۰۵', // TODO_CONFIRM
+}
+
+export const wingoLinks = {
+  support: 'https://wingomarkets.com/fa/contact-us',
+  terms: 'https://wingomarkets.com/dls/documents/Wingo-Markets-Terms-and-Conditions.pdf',
+  privacy: 'https://wingomarkets.com/dls/documents/Wingo-Markets-Privacy-Policy.pdf',
+  withdrawals: 'https://wingomarkets.com/fa', // TODO_CONFIRM: page listing withdrawal methods & timing
+}
+
+// Verbatim from the Wingo Persian site footer. Do not edit.
+export const RISK_WARNING =
+  'معامله ابزارهای مشتقه و محصولات اهرمی با سطح بالایی از ریسک همراه است و ممکن است برای همه سرمایه‌گذاران مناسب نباشد. پیش از شروع معامله، اطمینان حاصل کنید که ریسک‌های مربوطه را به‌طور کامل درک کرده‌اید و تنها با پولی معامله کنید که توانایی از دست دادن آن را دارید. وینگو مارکتس توسط Wingo Group LTD اداره می‌شود؛ شرکتی ثبت‌شده در جزیره خودمختار موالی (موهلی)، اتحادیه کومور، با شماره ثبت HY00523010 و دارای مجوز از سازمان خدمات بین‌المللی موالی (MISA) تحت مجوز کارگزاری و تسویه بین‌المللی شماره T2023302.'
+export const REGISTERED_OFFICE =
+  'Registered Office: New City, Acton Building, No. 64, 106, Podgorica, Montenegro.'
+export const englishDisclaimer = (ibName: string) =>
+  `This page has been published to introduce Wingo Markets' offer to the audience of ${ibName}. ${ibName} is an independent introducing partner and is not a representative or employee of Wingo Markets. The bonus, terms and services are provided by Wingo Markets, and only Wingo's official terms apply.`
+
+// TODO_CONFIRM: Latin spelling of the IB name for the English footer.
+export const ibNameLatin = 'Taraneh Akbari'

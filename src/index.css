@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-04-regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-05-medium.woff2) format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-06-bold.woff2) format("woff2"); font-weight: 600 700; font-display: swap; }
+@font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-07-heavy.woff2) format("woff2"); font-weight: 800; font-display: swap; }
+@font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-08-fat.woff2) format("woff2"); font-weight: 900; font-display: swap; }
+
+@theme {
+  --font-sans: YekanBakh, Tahoma, sans-serif;
+
+  --color-mist: #eef4f1;
+  --color-paper: #ffffff;
+  --color-ink: #0e1f1a;
+  --color-ink-soft: #4d5f59;
+  --color-line: #d3e0da;
+  --color-pine: #0b3b30;
+  --color-pine-deep: #072a22;
+  --color-wingo: #00b991;
+  --color-signal: #00d37e;
+  --color-neon: #00ffc7;
+}
+
+/* Offer accent = colour of the account being offered (from wingomarkets.com tokens). */
+.acc-pro      { --acc: #d8f544; --acc-ink: #1d2400; }
+.acc-ecn      { --acc: #00c4c3; --acc-ink: #002d2d; }
+.acc-starter  { --acc: #2ac77e; --acc-ink: #00261a; }
+.acc-goldflex { --acc: #deb55e; --acc-ink: #2b1d00; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+body {
+  @apply bg-[#dfe7e3] font-sans text-ink antialiased;
+  font-feature-settings: "ss01";
+}
+
+:focus-visible { outline: 2px solid var(--color-wingo); outline-offset: 3px; border-radius: 4px; }
+
+/* Giant outlined account name inside the offer slab */
+.outline-type {
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in oklab, var(--acc) 70%, transparent);
+}
+
+/* Perforated edge on the offer slip */
+.perforated {
+  --hole: 9px;
+  mask:
+    radial-gradient(circle var(--hole) at 0 50%, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 100% 50%, #0000 98%, #000);
+  mask-composite: intersect;
+}
+
+/* Fine diagonal hatch for the portrait placeholder */
+.hatch {
+  background-image: repeating-linear-gradient(135deg, #0b3b3014 0 1px, transparent 1px 11px);
+}
+
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .faq-plus { transform: rotate(45deg); }
+
+@keyframes slip-in {
+  from { opacity: 0; transform: translateY(18px) rotate(-1.2deg); }
+  to   { opacity: 1; transform: none; }
+}
+.slip-in { animation: slip-in .7s cubic-bezier(.2,.8,.2,1) both; }
