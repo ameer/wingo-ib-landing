@@ -12,47 +12,46 @@
 @theme {
   --font-sans: YekanBakh, Tahoma, sans-serif;
 
-  /* All values taken from wingomarkets.com CSS tokens. Light theme; dark overrides below. */
-  --color-page: #f9fafc;
-  --color-paper: #fefefe;
-  --color-ink: #1b211f;
-  --color-ink-soft: #5b5b5b;
-  --color-ink-mute: #959499;
-  --color-line: #d8dddf;
-  --color-line-soft: #e9edee;
-  --color-mint: #bffcee;
-  --color-glow: #b3ffed;
+  /* Neutrals (light theme; dark overrides below) */
+  --color-page: #f7f7f6;
+  --color-paper: #ffffff;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #595959;
+  --color-ink-mute: #8f8f94;
+  --color-line: #dcdcda;
+  --color-line-soft: #ebebe9;
+
+  /* IB colour. --color-brand / --color-brand-ink are replaced at runtime from ib.json;
+     everything else is derived from them, so one value re-themes the page. */
+  --color-brand: #ff6a2b;
+  --color-brand-ink: #210b02;
+  --color-brand-deep: color-mix(in oklab, var(--color-brand) 70%, #000);   /* brand-coloured text on light */
+  --color-brand-soft: color-mix(in oklab, var(--color-brand) 12%, var(--color-paper)); /* tinted chips */
+  --color-brand-2: color-mix(in oklab, var(--color-brand) 55%, #fff);      /* second stop for gradients */
 
   /* Theme-independent */
   --color-snow: #fefefe;
-  --color-wingo: #01b990;
-  --color-wingo-deep: #009c7a;
-  --color-signal: #00d37e;
-  --color-aqua: #28e8be;
-  --color-neon: #00ffc7;
-  --color-night: #101010;
-  --color-night-card: #0f1413;
-  --color-night-line: #1a1e1e;
+  --color-night: #111111;
+  --color-night-card: #181818;
+  --color-night-line: #262626;
 }
 
-/* Wingo's own dark tokens (--background, --background-deep, --card, --border, --muted-foreground). */
 [data-theme=dark] {
   color-scheme: dark;
-  --color-page: #101010;
+  --color-page: #0e0e0e;
   --color-paper: #171717;
-  --color-ink: #fafafa;
-  --color-ink-soft: #a1a1a1;
-  --color-ink-mute: #959499;
-  --color-line: #282828;
-  --color-line-soft: #1f2322;
-  --color-mint: #0c3a2f;
-  --color-glow: #00b991;
-  --color-wingo-deep: #28e8be;
-  --color-night: #020104;
-  --color-night-card: #0f1413;
+  --color-ink: #f5f5f4;
+  --color-ink-soft: #a3a3a3;
+  --color-ink-mute: #8a8a8f;
+  --color-line: #2c2c2c;
+  --color-line-soft: #212121;
+  --color-brand-deep: color-mix(in oklab, var(--color-brand) 72%, #fff);
+  --color-brand-soft: color-mix(in oklab, var(--color-brand) 16%, var(--color-paper));
+  --color-night: #050505;
+  --color-night-card: #141414;
 }
 
-/* Offer accent = colour of the account being offered (from wingomarkets.com tokens). */
+/* Account colours (Wingo's account identity, shown with their account icons). */
 .acc-pro      { --acc: #d8f544; --acc-ink: #1d2400; }
 .acc-ecn      { --acc: #00c4c3; --acc-ink: #002d2d; }
 .acc-starter  { --acc: #2ac77e; --acc-ink: #00261a; }
@@ -64,15 +63,15 @@ body {
   transition: background-color .4s ease, color .4s ease;
 }
 
-:focus-visible { outline: 2px solid var(--color-wingo); outline-offset: 3px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; border-radius: 4px; }
 
 /* ---------- Brand surfaces ---------- */
 
-/* Wingo-style neon hairline border (their --neon-border) */
+/* Hairline gradient border for cards on dark panels */
 .neon-edge {
   background:
     linear-gradient(var(--color-night-card), var(--color-night-card)) padding-box,
-    linear-gradient(135deg, #00ffc766, #1a1e1e 40%, #1a1e1e 60%, #00d37e55) border-box;
+    linear-gradient(135deg, color-mix(in oklab, var(--acc, var(--color-brand)) 55%, transparent), #262626 40%, #262626 60%, color-mix(in oklab, var(--color-brand) 35%, transparent)) border-box;
   border: 1px solid transparent;
 }
 
@@ -80,40 +79,32 @@ body {
 .ring-brand {
   background:
     linear-gradient(var(--color-paper), var(--color-paper)) padding-box,
-    linear-gradient(160deg, var(--color-aqua), var(--color-wingo) 45%, var(--acc)) border-box;
+    linear-gradient(160deg, var(--color-brand-2), var(--color-brand) 55%, var(--color-brand-deep)) border-box;
   border: 3px solid transparent;
 }
 
-/* Giant outlined account name inside the offer slab */
-.outline-type {
-  color: transparent;
-  -webkit-text-stroke: 1.5px color-mix(in oklab, var(--acc) 70%, transparent);
+/* Wingo's dotted globe, recoloured to the IB colour (the PNG is used as a mask only). */
+.earth {
+  aspect-ratio: 992 / 930;
+  background: linear-gradient(160deg, var(--color-brand-2), var(--color-brand));
+  mask: url(/brand/img/Earth.png) center / contain no-repeat;
 }
 
-/* Perforated edge on the offer slip */
-.perforated {
-  --hole: 9px;
-  mask:
-    radial-gradient(circle var(--hole) at 0 50%, #0000 98%, #000),
-    radial-gradient(circle var(--hole) at 100% 50%, #0000 98%, #000);
-  mask-composite: intersect;
-}
-
-/* Rotating conic hairline around the offer slip */
+/* Rotating conic hairline around the offer card */
 @property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 .spin-border { position: relative; isolation: isolate; }
 .spin-border::before {
-  content: ''; position: absolute; inset: -1.5px; border-radius: 18px; padding: 1.5px; pointer-events: none; z-index: -1;
-  background: conic-gradient(from var(--ang), transparent 0 60%, var(--acc) 80%, transparent 96%);
+  content: ''; position: absolute; inset: -1.5px; border-radius: inherit; padding: 1.5px; pointer-events: none; z-index: -1;
+  background: conic-gradient(from var(--ang), transparent 0 60%, var(--color-brand) 80%, transparent 96%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: spin-ang 5.5s linear infinite;
+  animation: spin-ang 6s linear infinite;
 }
 @keyframes spin-ang { to { --ang: 360deg; } }
 
 /* Fine diagonal hatch for the portrait placeholder */
-.hatch { background-image: repeating-linear-gradient(135deg, #01b9901a 0 1px, transparent 1px 12px); }
+.hatch { background-image: repeating-linear-gradient(135deg, color-mix(in oklab, var(--color-brand) 12%, transparent) 0 1px, transparent 1px 12px); }
 
 /* ---------- Motion layer (src/motion). Static states here; GSAP animates on top. ---------- */
 
@@ -125,8 +116,8 @@ html.lenis { scroll-behavior: auto !important; }
 /* Scroll progress bar */
 .progress {
   position: fixed; top: 0; inset-inline: 0; z-index: 70; height: 2px;
-  background: linear-gradient(to left, var(--color-wingo), var(--color-aqua));
-  box-shadow: 0 0 12px var(--color-aqua);
+  background: linear-gradient(to left, var(--color-brand), var(--color-brand-2));
+  box-shadow: 0 0 12px var(--color-brand);
   transform-origin: right center; transform: scaleX(0); pointer-events: none;
 }
 
@@ -134,10 +125,10 @@ html.lenis { scroll-behavior: auto !important; }
 .torch {
   position: fixed; left: 0; top: 0; z-index: 60; width: 560px; height: 560px; margin: -280px 0 0 -280px;
   border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .6s ease;
-  background: radial-gradient(closest-side, #00ffc714, #00ffc705 50%, transparent);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 9%, transparent), color-mix(in oklab, var(--color-brand) 3%, transparent) 50%, transparent);
   mix-blend-mode: screen;
 }
-:root:not([data-theme=dark]) .torch { mix-blend-mode: multiply; background: radial-gradient(closest-side, #01b99012, transparent 70%); }
+:root:not([data-theme=dark]) .torch { mix-blend-mode: multiply; background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 7%, transparent), transparent 70%); }
 
 /* Header states */
 .hdr { transition: translate .5s cubic-bezier(.2,.8,.2,1), background-color .4s ease, box-shadow .4s ease, border-color .4s ease; }
@@ -145,7 +136,7 @@ html.lenis { scroll-behavior: auto !important; }
 .hdr.nav-hidden { translate: 0 -110%; }
 
 /* Split words (word level keeps Persian letter joining intact) */
-.w { display: inline-block; overflow: hidden; vertical-align: top; padding: .1em .04em; margin: -.1em -.04em; }
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: .1em .04em; margin: -.1em 0.01em; }
 .w > span { display: inline-block; will-change: transform; }
 
 /* Buttons: periodic shine + icon nudge */
@@ -162,25 +153,26 @@ html.lenis { scroll-behavior: auto !important; }
 
 .glow-pulse { animation: glow-pulse 2.4s ease-in-out infinite alternate; }
 @keyframes glow-pulse {
-  from { box-shadow: 0 12px 40px -14px #01b990cc; }
-  to { box-shadow: 0 14px 40px -6px #01b990e6, 0 0 70px -6px #28e8bee6; }
+  from { box-shadow: 0 12px 40px -14px color-mix(in oklab, var(--color-brand) 80%, transparent); }
+  to { box-shadow: 0 14px 40px -6px color-mix(in oklab, var(--color-brand) 90%, transparent), 0 0 70px -6px color-mix(in oklab, var(--color-brand-2) 90%, transparent); }
 }
 
 /* Spotlight that follows the pointer on tilt cards (--mx/--my set by tilt()) */
 .spot::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .4s ease;
-  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 30%), color-mix(in oklab, var(--acc, #00ffc7) 22%, transparent), transparent 45%);
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 30%), color-mix(in oklab, var(--spot, var(--acc, var(--color-brand))) 20%, transparent), transparent 45%);
 }
 @media (hover: hover) { .spot:hover::after { opacity: 1; } }
 
-/* Stepper: rail fills with scroll (--rail), dots light up (.on) */
-.rail-fill { transform-origin: right center; transform: scaleX(var(--rail, 1)); }
-.rail-fill-v { transform-origin: center top; transform: scaleY(var(--rail, 1)); }
+/* Stepper: one connector between each pair of dots. --rail (0→1) fills them in order. */
+.rail { --fill: clamp(0, calc(var(--rail, 1) * 2 - var(--i)), 1); }
+.rail > i { position: absolute; inset: 0; background: linear-gradient(to left, var(--color-brand), var(--color-brand-2)); transform-origin: right center; transform: scaleX(var(--fill)); }
+@container (width < 48rem) { .rail > i { background: linear-gradient(to bottom, var(--color-brand), var(--color-brand-2)); transform-origin: center top; transform: scaleY(var(--fill)); } }
 .step-dot { transition: background-color .5s ease, color .5s ease, box-shadow .5s ease; }
 .step-dot:not(.on) { background: var(--color-paper); color: var(--color-ink-mute); }
-.step-dot.on { background: var(--color-wingo); color: var(--color-snow); box-shadow: 0 10px 24px -10px #01b990; }
+.step-dot.on { background: var(--color-brand); color: var(--color-brand-ink); box-shadow: 0 10px 24px -10px var(--color-brand); }
 .step-dot.on::after {
-  content: ''; position: absolute; inset: -6px; border-radius: 20px; border: 2px solid #01b9908c;
+  content: ''; position: absolute; inset: -6px; border-radius: 20px; border: 2px solid color-mix(in oklab, var(--color-brand) 55%, transparent);
   animation: ring 2.2s ease-out infinite;
 }
 @keyframes ring { from { transform: scale(.9); opacity: .9; } to { transform: scale(1.4); opacity: 0; } }
@@ -200,10 +192,13 @@ html.lenis { scroll-behavior: auto !important; }
 .sweep { position: relative; overflow: hidden; }
 .sweep::before {
   content: ''; position: absolute; top: -40%; bottom: -40%; width: 40%; left: -40%; border-radius: 50%;
-  background: radial-gradient(closest-side, #01b99055, transparent); filter: blur(30px);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 35%, transparent), transparent); filter: blur(30px);
   animation: sweep 9s ease-in-out infinite; pointer-events: none;
 }
 @keyframes sweep { 0% { left: -40%; } 50% { left: 100%; } 100% { left: -40%; } }
+
+/* Mini sparkline in the social-trading tile draws itself in */
+.spark { stroke-dasharray: 1; stroke-dashoffset: 0; }
 
 /* Theme switch: circular reveal from the toggle (View Transitions API) */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
@@ -213,7 +208,7 @@ html.lenis { scroll-behavior: auto !important; }
 
 /* Reduced motion: static, readable page */
 @media (prefers-reduced-motion: reduce) {
-  .torch, .progress, [data-particles] { display: none !important; }
+  .torch, .progress { display: none !important; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .sticky-cta { translate: 0 0; opacity: 1; }
 }

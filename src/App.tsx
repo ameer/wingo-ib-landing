@@ -2,7 +2,7 @@ import { Landing } from './landing/Landing'
 import { ACCOUNTS, offer, type AccountKey, type OfferMode } from './config/ib'
 
 // Routes (see README):
-//   /                     -> bonus offer on the configured account (config/ib.ts → offer.account)
+//   /                     -> offer type + account from ib.json (offer.mode, offer.account)
 //   /bonus/<account>      -> bonus offer   (starter | ecn | pro | goldflex)
 //   /account/<account>    -> specific-account offer
 function resolveRoute(): { mode: OfferMode; account: AccountKey } | null {
@@ -10,7 +10,7 @@ function resolveRoute(): { mode: OfferMode; account: AccountKey } | null {
   const path = location.pathname.startsWith(base) ? location.pathname.slice(base.length) : location.pathname
   const [mode, acc, ...rest] = path.split('/').filter(Boolean)
 
-  if (!mode) return { mode: 'bonus', account: offer.account }
+  if (!mode) return { mode: offer.mode, account: offer.account }
   if ((mode === 'bonus' || mode === 'account') && acc && acc in ACCOUNTS && rest.length === 0) {
     return { mode, account: acc as AccountKey }
   }
@@ -29,7 +29,7 @@ function NotFound() {
       <div>
         <h1 className="text-3xl font-black">این صفحه پیدا نشد</h1>
         <p className="mt-3 text-ink-soft">آدرس را بررسی کنید یا به صفحه اصلی پیشنهاد بروید.</p>
-        <a href={import.meta.env.BASE_URL} className="mt-6 inline-flex h-12 items-center rounded-full bg-wingo px-6 font-bold text-paper">
+        <a href={import.meta.env.BASE_URL} className="mt-6 inline-flex h-12 items-center rounded-full bg-brand px-6 font-bold text-brand-ink">
           صفحه اصلی پیشنهاد
         </a>
       </div>

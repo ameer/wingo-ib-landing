@@ -1,4 +1,5 @@
-// Single source for every per-IB value. Components never hardcode these.
+// Per-IB values. Defaults live here; at startup `loadConfig()` overwrites them with
+// public/ib.json, so each IB's deploy changes that one file and needs no rebuild.
 // TODO_CONFIRM = sample value / draft copy that needs sign-off before publishing.
 
 export type OfferMode = 'bonus' | 'account'
@@ -14,24 +15,35 @@ export const ACCOUNTS: Record<AccountKey, { name: string; className: string; ico
 }
 export const ACCOUNT_KEYS = Object.keys(ACCOUNTS) as AccountKey[]
 
-/** Resolve a public/ asset path against Vite's base URL. */
-export const asset = (p: string) => `${import.meta.env.BASE_URL}${p}`
+/** Resolve a public/ asset path against Vite's base URL. Absolute paths and URLs pass through. */
+export const asset = (p: string) => (/^(https?:)?\/|^data:/.test(p) ? p : `${import.meta.env.BASE_URL}${p}`)
+
+/* ── Overridable from public/ib.json (see README → "Setting up an IB") ── */
 
 export const ib = {
   name: 'ترانه اکبری', // sample name from the wireframe
+  nameLatin: 'Taraneh Akbari', // used in the English footer text
   initials: 'ت‌ا',
-  logo: null as string | null, // IB logo URL; null shows the text mark
-  photo: null as string | null, // IB portrait URL; null shows the placeholder
-  bio: 'از ۱۳۹۸ بازار طلا و فارکس را دنبال می‌کنم و تحلیل‌هایم را در کانال تلگرامم منتشر می‌کنم.', // TODO_CONFIRM per IB
-  // TODO_CONFIRM: replace with this IB's approved ClientX link before publishing
-  panelUrl: 'https://my.wingomarkets.com/register?ib=SAMPLE',
+  logo: null as string | null, // IB logo; null shows the initials mark
+  photo: null as string | null, // IB portrait; null shows the placeholder
+  bio: 'از ۱۳۹۸ بازار طلا و فارکس را دنبال می‌کنم و تحلیل‌هایم را در کانال تلگرامم منتشر می‌کنم.',
+  panelUrl: 'https://my.wingomarkets.com/register?ib=SAMPLE', // TODO_CONFIRM: this IB's approved ClientX link
 }
 
 export const offer = {
-  account: 'pro' as AccountKey,
+  mode: 'bonus' as OfferMode, // offer type shown at /
+  account: 'pro' as AccountKey, // account shown at /
   minDeposit: '۱۰۰ دلار', // TODO_CONFIRM
   deadline: '۳۰ آذر ۱۴۰۵', // TODO_CONFIRM
 }
+
+/** Page colour. `brand` drives buttons, highlights and the globe; `brandInk` is text placed on it. */
+export const colors = {
+  brand: '#ff6a2b',
+  brandInk: '#210b02',
+}
+
+/* ── Fixed for every IB ── */
 
 export const wingoLinks = {
   support: 'https://wingomarkets.com/fa/contact-us',
@@ -47,6 +59,3 @@ export const REGISTERED_OFFICE =
   'Registered Office: New City, Acton Building, No. 64, 106, Podgorica, Montenegro.'
 export const englishDisclaimer = (ibName: string) =>
   `This page has been published to introduce Wingo Markets' offer to the audience of ${ibName}. ${ibName} is an independent introducing partner and is not a representative or employee of Wingo Markets. The bonus, terms and services are provided by Wingo Markets, and only Wingo's official terms apply.`
-
-// TODO_CONFIRM: Latin spelling of the IB name for the English footer.
-export const ibNameLatin = 'Taraneh Akbari'

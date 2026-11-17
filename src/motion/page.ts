@@ -1,8 +1,8 @@
 // Page choreography. Elements are found by data-* hooks rendered in Landing.tsx.
 // Runs inside useGSAP (layout effect), so start states are set before first paint.
 import {
-  $, $$, anchors, countUp, fine, gsap, idleOffscreen, loop, magnetic, particles, reduce,
-  ScrollTrigger, startLenis, tilt, watchLayout, wide,
+  $, $$, anchors, countUp, fine, gsap, idleOffscreen, loop, magnetic, reduce,
+  ScrollTrigger, startLenis, watchLayout, wide,
 } from './core'
 
 export function setupPage(root: HTMLElement, signal: AbortSignal) {
@@ -30,7 +30,6 @@ export function setupPage(root: HTMLElement, signal: AbortSignal) {
 
 function heroIntro(root: HTMLElement) {
   const words = $$('[data-hero-title] .w > span', root)
-  const chip = $('[data-hero-chip]', root)
   gsap.timeline({ defaults: { ease: 'power3.out' } })
     .from('[data-hdr]', { yPercent: -100, opacity: 0, duration: 0.9, clearProps: 'transform,opacity' }, 0)
     .from('[data-hero-earth]', { scale: 0.75, rotate: -25, opacity: 0, duration: 2.2, ease: 'power2.out' }, 0)
@@ -39,8 +38,6 @@ function heroIntro(root: HTMLElement) {
     .from('[data-hero-item]', { y: 26, opacity: 0, filter: 'blur(6px)', duration: 0.9, stagger: 0.09, clearProps: 'filter' }, 0.55)
     .from('[data-hero-portrait]', { y: 60, scale: 0.92, opacity: 0, duration: 1.3, ease: 'expo.out' }, 0.3)
     .fromTo('[data-hero-plate]', { rotate: 4, opacity: 0 }, { rotate: 0, opacity: 1, duration: 1.1, ease: 'back.out(1.6)' }, 0.7)
-    .from(chip, { x: -40, scale: 0.85, opacity: 0, duration: 0.8, ease: 'back.out(1.8)' }, 1.1)
-    .add(() => { loop(gsap.to(chip, { y: -8, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1 }), chip) })
 }
 
 function heroParallax(root: HTMLElement, signal: AbortSignal) {
@@ -108,34 +105,18 @@ function headingsAndFades(root: HTMLElement) {
   }
 }
 
-/* ── Offer: scrubbed account name + icon, slip drops in, facts count up, particles ── */
+/* ── Offer: card rises, facts and icons pop, deposit counts up ── */
 
 function offer(root: HTMLElement) {
-  const sec = $('[data-offer]', root)
-  if (!sec) return
-  const st = { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: 1 }
-  gsap.fromTo('[data-offer-name]', { xPercent: -14 }, { xPercent: 10, ease: 'none', scrollTrigger: st })
-  gsap.fromTo('[data-offer-icon]', { rotate: -25, y: 80 }, { rotate: 25, y: -80, ease: 'none', scrollTrigger: st })
-  gsap.fromTo('[data-offer-glow]', { opacity: 0.2, scale: 0.8 }, { opacity: 0.75, scale: 1.1, ease: 'none', scrollTrigger: { ...st, end: 'center center' } })
-
-  const slip = $('[data-slip]', sec)
-  if (slip) {
-    gsap.set(slip, { transformPerspective: 1100 })
-    gsap.timeline({ scrollTrigger: { trigger: slip, start: 'top 85%' } })
-      .from(slip, { y: 90, rotateX: 28, rotate: -3, opacity: 0, duration: 1.3, ease: 'expo.out' })
-      .from($$('[data-fact]', slip), { y: 20, opacity: 0, duration: 0.6, stagger: 0.12 }, 0.35)
-      .from($$('[data-fact] [data-icon]', slip), { scale: 0, rotate: -60, duration: 0.7, stagger: 0.12, ease: 'back.out(2.2)' }, 0.4)
-      .add(() => $$('[data-count]', slip).forEach((n) => countUp(n, 1.3)), 0.5)
-      .from('[data-offer-cta]', { scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(2)' }, 0.7)
-  }
-
-  const acc = getComputedStyle(sec).getPropertyValue('--acc').trim()
-  particles($<HTMLCanvasElement>('[data-particles]', sec), ['0,211,126', '40,232,190', hexRgb(acc)])
-}
-
-function hexRgb(hex: string) {
-  const m = hex.replace('#', '').match(/.{2}/g)
-  return m ? m.map((h) => parseInt(h, 16)).join(',') : '0,255,199'
+  const card = $('[data-offer-card]', root)
+  if (!card) return
+  gsap.set(card, { transformPerspective: 1400 })
+  gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 85%' } })
+    .from(card, { y: 70, rotateX: 10, opacity: 0, duration: 1.2, ease: 'expo.out' })
+    .from($$('[data-fact]', card), { y: 24, opacity: 0, duration: 0.7, stagger: 0.1 }, 0.35)
+    .from($$('[data-fact] [data-icon]', card), { scale: 0, rotate: -60, duration: 0.7, stagger: 0.1, ease: 'back.out(2.2)' }, 0.45)
+    .add(() => $$('[data-count]', card).forEach((n) => countUp(n, 1.3)), 0.5)
+    .from('[data-offer-cta]', { scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(2)' }, 0.7)
 }
 
 /* ── Steps: rail fills with scroll and lights each dot ── */
@@ -156,49 +137,54 @@ function steps(root: HTMLElement) {
   gsap.from('[data-step] .step-dot svg', { scale: 0, rotate: -40, duration: 0.9, stagger: 0.18, delay: 0.3, ease: 'back.out(2)', scrollTrigger: { trigger: list, start: 'top 82%' } })
 }
 
-/* ── Why Wingo: account cards tilt, markets panel unclips, features slide in ── */
+/* ── Why Wingo bento: tiles rise in a wave, then each tile's detail animates ── */
 
 function whyWingo(root: HTMLElement, signal: AbortSignal) {
-  const cards = $$('[data-acc-card]', root)
+  const bento = $('[data-bento]', root)
+  if (!bento) return
+  const tiles = $$('[data-tile]', bento)
+  const st = { trigger: bento, start: 'top 82%' }
+  gsap.set(tiles, { transformPerspective: 1200 })
+  gsap.from(tiles, { y: 60, rotateX: 8, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.09, scrollTrigger: st })
+  gsap.from($$('[data-tile] [data-icon]', bento), { scale: 0, rotate: -45, duration: 0.7, stagger: 0.09, delay: 0.3, ease: 'back.out(2)', scrollTrigger: st })
+
+  const cards = $$('[data-acc-card]', bento)
   if (cards.length) {
-    gsap.timeline({ scrollTrigger: { trigger: cards[0].parentElement, start: 'top 82%' } })
-      .from(cards, { y: 80, opacity: 0, duration: 1.1, stagger: 0.12, ease: 'expo.out' })
-      .from($$('[data-acc-icon]', root), { scale: 0, rotate: -90, duration: 0.8, stagger: 0.12, ease: 'back.out(2)' }, 0.2)
-      .from('[data-acc-badge]', { scale: 0, opacity: 0, duration: 0.6, ease: 'back.out(2.5)' }, 0.6)
-    tilt(cards, signal)
-    for (const c of cards) {
-      const ic = $('[data-acc-icon]', c)
-      if (ic) loop(gsap.to(ic, { y: -5, duration: 2.2 + Math.random(), ease: 'sine.inOut', yoyo: true, repeat: -1 }), c)
+    gsap.timeline({ scrollTrigger: { trigger: cards[0], start: 'top 88%' } })
+      .from(cards, { y: 20, scale: 0.8, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'back.out(2)' }, 0.2)
+  }
+
+  const markets = $('[data-markets]', bento)
+  const mt5 = markets && $('[data-mt5]', markets)
+  if (markets && mt5) {
+    gsap.set(mt5, { transformPerspective: 1200 })
+    gsap.from(mt5, { rotateY: -30, rotateX: 16, y: 80, opacity: 0, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: markets, start: 'top 70%' } })
+    if (fine()) {
+      const rx = gsap.quickTo(mt5, 'rotationX', { duration: 0.8, ease: 'power3' })
+      const ry = gsap.quickTo(mt5, 'rotationY', { duration: 0.8, ease: 'power3' })
+      markets.addEventListener('pointermove', (e) => {
+        const r = markets.getBoundingClientRect()
+        ry(((e.clientX - r.left) / r.width - 0.5) * 16)
+        rx((0.5 - (e.clientY - r.top) / r.height) * 10)
+      }, { signal })
+      markets.addEventListener('pointerleave', () => { rx(0); ry(0) }, { signal })
     }
   }
 
-  const markets = $('[data-markets]', root)
-  if (markets) {
-    gsap.from(markets, { clipPath: 'inset(12% 8% 12% 8% round 32px)', opacity: 0, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: markets, start: 'top 82%' } })
-    const mt5 = $('[data-mt5]', markets)
-    if (mt5) {
-      gsap.set(mt5, { transformPerspective: 1200 })
-      gsap.from(mt5, { rotateY: -40, rotateX: 18, y: 100, opacity: 0, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: markets, start: 'top 75%' } })
-      if (fine()) {
-        const rx = gsap.quickTo(mt5, 'rotationX', { duration: 0.8, ease: 'power3' })
-        const ry = gsap.quickTo(mt5, 'rotationY', { duration: 0.8, ease: 'power3' })
-        markets.addEventListener('pointermove', (e) => {
-          const r = markets.getBoundingClientRect()
-          ry(((e.clientX - r.left) / r.width - 0.5) * 18)
-          rx((0.5 - (e.clientY - r.top) / r.height) * 12)
-        }, { signal })
-        markets.addEventListener('pointerleave', () => { rx(0); ry(0) }, { signal })
-      }
-    }
+  const spark = $('[data-spark]', bento)
+  if (spark) gsap.fromTo(spark, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', scrollTrigger: { trigger: spark, start: 'top 92%' } })
+
+  const bubbles = $$('[data-bubble]', bento)
+  if (bubbles.length) gsap.from(bubbles, { y: 14, scale: 0.85, opacity: 0, duration: 0.6, stagger: 0.35, ease: 'back.out(2)', scrollTrigger: { trigger: bubbles[0], start: 'top 92%' } })
+
+  const coin = $('[data-float]', bento)
+  if (coin) {
+    gsap.from(coin, { x: -50, y: 20, rotate: -20, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: coin, start: 'top 95%' } })
+    loop(gsap.to(coin, { y: -8, rotate: 3, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 }), coin)
   }
 
-  const feats = $$('[data-feature]', root)
-  if (feats.length) {
-    gsap.from(feats, { x: -40, opacity: 0, duration: 0.8, stagger: 0.12, scrollTrigger: { trigger: feats[0], start: 'top 88%' } })
-    gsap.from($$('[data-feature] [data-icon]', root), { scale: 0, rotate: -45, duration: 0.7, stagger: 0.12, delay: 0.2, ease: 'back.out(2)', scrollTrigger: { trigger: feats[0], start: 'top 88%' } })
-  }
-  const pays = $$('[data-pay] img', root)
-  if (pays.length) gsap.from(pays, { y: 16, scale: 0.4, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'back.out(2.5)', scrollTrigger: { trigger: pays[0], start: 'top 95%' } })
+  const pays = $$('[data-pay] li', bento)
+  if (pays.length) gsap.from(pays, { y: 16, scale: 0.6, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'back.out(2.5)', scrollTrigger: { trigger: pays[0], start: 'top 95%' } })
 }
 
 function faq(root: HTMLElement) {
@@ -209,7 +195,7 @@ function faq(root: HTMLElement) {
 function footer(root: HTMLElement) {
   const earth = $('[data-ft-earth]', root)
   if (earth) {
-    gsap.fromTo(earth, { yPercent: 30, scale: 0.8, opacity: 0.1 }, { yPercent: 0, scale: 1, opacity: 0.35, ease: 'none', scrollTrigger: { trigger: '[data-site-footer]', start: 'top bottom', end: 'top 20%', scrub: 1 } })
+    gsap.fromTo(earth, { yPercent: 30, scale: 0.8, opacity: 0.1 }, { yPercent: 0, scale: 1, opacity: 0.5, ease: 'none', scrollTrigger: { trigger: '[data-site-footer]', start: 'top bottom', end: 'top 20%', scrub: 1 } })
     loop(gsap.to(earth, { rotate: 8, duration: 12, ease: 'sine.inOut', yoyo: true, repeat: -1 }), earth)
   }
   gsap.from('[data-ft-col]', { y: 40, opacity: 0, duration: 0.9, stagger: 0.12, scrollTrigger: { trigger: '[data-site-footer]', start: 'top 88%' } })
