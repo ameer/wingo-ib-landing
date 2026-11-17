@@ -51,7 +51,7 @@ function Header() {
         )}
         <div className="flex items-center gap-2 text-xs text-ink-soft">
           <span className="hidden @md:inline">همکار</span>
-          <img src="/brand/wingo-logo-ink.png" alt="وینگو مارکتس" className="h-7 w-auto" width={96} height={28} />
+          <img src={`${import.meta.env.BASE_URL}brand/wingo-logo-ink.png`} alt="وینگو مارکتس" className="h-7 w-auto" width={96} height={28} />
         </div>
       </div>
     </header>
@@ -320,7 +320,7 @@ function Footer() {
     <footer className="bg-ink text-paper/70">
       <div className={`${wrap} py-14`}>
         <div className="grid gap-10 @3xl:grid-cols-[1.4fr_1fr_1fr]">
-          <img src="/brand/wingo-logo.png" alt="Wingo Markets" className="h-10 w-auto self-start" width={137} height={40} />
+          <img src={`${import.meta.env.BASE_URL}brand/wingo-logo.png`} alt="Wingo Markets" className="h-10 w-auto self-start" width={137} height={40} />
           <nav aria-label="راهنمای پیشنهاد">
             <h2 className="mb-4 font-bold text-paper">راهنمای پیشنهاد</h2>
             <ul className="space-y-2.5 text-sm">
