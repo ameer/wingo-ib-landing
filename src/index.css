@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Dark mode follows [data-theme] on <html> (set before paint in index.html). */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 @font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-04-regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-05-medium.woff2) format("woff2"); font-weight: 500; font-display: swap; }
 @font-face { font-family: YekanBakh; src: url(/fonts/yekanbakh-06-bold.woff2) format("woff2"); font-weight: 600 700; font-display: swap; }
@@ -9,16 +12,44 @@
 @theme {
   --font-sans: YekanBakh, Tahoma, sans-serif;
 
-  --color-mist: #eef4f1;
-  --color-paper: #ffffff;
-  --color-ink: #0e1f1a;
-  --color-ink-soft: #4d5f59;
-  --color-line: #d3e0da;
-  --color-pine: #0b3b30;
-  --color-pine-deep: #072a22;
-  --color-wingo: #00b991;
+  /* All values taken from wingomarkets.com CSS tokens. Light theme; dark overrides below. */
+  --color-page: #f9fafc;
+  --color-paper: #fefefe;
+  --color-ink: #1b211f;
+  --color-ink-soft: #5b5b5b;
+  --color-ink-mute: #959499;
+  --color-line: #d8dddf;
+  --color-line-soft: #e9edee;
+  --color-mint: #bffcee;
+  --color-glow: #b3ffed;
+
+  /* Theme-independent */
+  --color-snow: #fefefe;
+  --color-wingo: #01b990;
+  --color-wingo-deep: #009c7a;
   --color-signal: #00d37e;
+  --color-aqua: #28e8be;
   --color-neon: #00ffc7;
+  --color-night: #101010;
+  --color-night-card: #0f1413;
+  --color-night-line: #1a1e1e;
+}
+
+/* Wingo's own dark tokens (--background, --background-deep, --card, --border, --muted-foreground). */
+[data-theme=dark] {
+  color-scheme: dark;
+  --color-page: #101010;
+  --color-paper: #171717;
+  --color-ink: #fafafa;
+  --color-ink-soft: #a1a1a1;
+  --color-ink-mute: #959499;
+  --color-line: #282828;
+  --color-line-soft: #1f2322;
+  --color-mint: #0c3a2f;
+  --color-glow: #00b991;
+  --color-wingo-deep: #28e8be;
+  --color-night: #020104;
+  --color-night-card: #0f1413;
 }
 
 /* Offer accent = colour of the account being offered (from wingomarkets.com tokens). */
@@ -27,18 +58,31 @@
 .acc-starter  { --acc: #2ac77e; --acc-ink: #00261a; }
 .acc-goldflex { --acc: #deb55e; --acc-ink: #2b1d00; }
 
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
-
 body {
-  @apply bg-[#dfe7e3] font-sans text-ink antialiased;
+  @apply bg-page font-sans text-ink antialiased;
   font-feature-settings: "ss01";
+  transition: background-color .4s ease, color .4s ease;
 }
 
 :focus-visible { outline: 2px solid var(--color-wingo); outline-offset: 3px; border-radius: 4px; }
+
+/* ---------- Brand surfaces ---------- */
+
+/* Wingo-style neon hairline border (their --neon-border) */
+.neon-edge {
+  background:
+    linear-gradient(var(--color-night-card), var(--color-night-card)) padding-box,
+    linear-gradient(135deg, #00ffc766, #1a1e1e 40%, #1a1e1e 60%, #00d37e55) border-box;
+  border: 1px solid transparent;
+}
+
+/* Gradient ring around the IB portrait */
+.ring-brand {
+  background:
+    linear-gradient(var(--color-paper), var(--color-paper)) padding-box,
+    linear-gradient(160deg, var(--color-aqua), var(--color-wingo) 45%, var(--acc)) border-box;
+  border: 3px solid transparent;
+}
 
 /* Giant outlined account name inside the offer slab */
 .outline-type {
@@ -55,17 +99,121 @@ body {
   mask-composite: intersect;
 }
 
+/* Rotating conic hairline around the offer slip */
+@property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.spin-border { position: relative; isolation: isolate; }
+.spin-border::before {
+  content: ''; position: absolute; inset: -1.5px; border-radius: 18px; padding: 1.5px; pointer-events: none; z-index: -1;
+  background: conic-gradient(from var(--ang), transparent 0 60%, var(--acc) 80%, transparent 96%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-ang 5.5s linear infinite;
+}
+@keyframes spin-ang { to { --ang: 360deg; } }
+
 /* Fine diagonal hatch for the portrait placeholder */
-.hatch {
-  background-image: repeating-linear-gradient(135deg, #0b3b3014 0 1px, transparent 1px 11px);
+.hatch { background-image: repeating-linear-gradient(135deg, #01b9901a 0 1px, transparent 1px 12px); }
+
+/* ---------- Motion layer (src/motion). Static states here; GSAP animates on top. ---------- */
+
+/* Smooth scroll (Lenis) — a global smooth scroll-behavior would fight it */
+html.lenis, html.lenis body { height: auto; }
+html.lenis { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Scroll progress bar */
+.progress {
+  position: fixed; top: 0; inset-inline: 0; z-index: 70; height: 2px;
+  background: linear-gradient(to left, var(--color-wingo), var(--color-aqua));
+  box-shadow: 0 0 12px var(--color-aqua);
+  transform-origin: right center; transform: scaleX(0); pointer-events: none;
 }
 
-details > summary { list-style: none; cursor: pointer; }
-details > summary::-webkit-details-marker { display: none; }
-details[open] .faq-plus { transform: rotate(45deg); }
-
-@keyframes slip-in {
-  from { opacity: 0; transform: translateY(18px) rotate(-1.2deg); }
-  to   { opacity: 1; transform: none; }
+/* Pointer torch: soft light following the cursor */
+.torch {
+  position: fixed; left: 0; top: 0; z-index: 60; width: 560px; height: 560px; margin: -280px 0 0 -280px;
+  border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .6s ease;
+  background: radial-gradient(closest-side, #00ffc714, #00ffc705 50%, transparent);
+  mix-blend-mode: screen;
 }
-.slip-in { animation: slip-in .7s cubic-bezier(.2,.8,.2,1) both; }
+:root:not([data-theme=dark]) .torch { mix-blend-mode: multiply; background: radial-gradient(closest-side, #01b99012, transparent 70%); }
+
+/* Header states */
+.hdr { transition: translate .5s cubic-bezier(.2,.8,.2,1), background-color .4s ease, box-shadow .4s ease, border-color .4s ease; }
+.hdr.nav-solid { box-shadow: 0 20px 50px -28px #0006; }
+.hdr.nav-hidden { translate: 0 -110%; }
+
+/* Split words (word level keeps Persian letter joining intact) */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: .1em .04em; margin: -.1em -.04em; }
+.w > span { display: inline-block; will-change: transform; }
+
+/* Buttons: periodic shine + icon nudge */
+.btn-shine { position: relative; isolation: isolate; overflow: hidden; }
+.btn-shine::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, #ffffff8c 50%, transparent 65%);
+  transform: translateX(130%);
+  animation: shine 4.2s ease-in-out infinite;
+}
+@keyframes shine { 0%, 62% { transform: translateX(130%); } 100% { transform: translateX(-130%); } }
+.btn-shine .nudge { transition: transform .3s ease; }
+@media (hover: hover) { .btn-shine:hover .nudge { transform: translateX(-4px); } }
+
+.glow-pulse { animation: glow-pulse 2.4s ease-in-out infinite alternate; }
+@keyframes glow-pulse {
+  from { box-shadow: 0 12px 40px -14px #01b990cc; }
+  to { box-shadow: 0 14px 40px -6px #01b990e6, 0 0 70px -6px #28e8bee6; }
+}
+
+/* Spotlight that follows the pointer on tilt cards (--mx/--my set by tilt()) */
+.spot::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 30%), color-mix(in oklab, var(--acc, #00ffc7) 22%, transparent), transparent 45%);
+}
+@media (hover: hover) { .spot:hover::after { opacity: 1; } }
+
+/* Stepper: rail fills with scroll (--rail), dots light up (.on) */
+.rail-fill { transform-origin: right center; transform: scaleX(var(--rail, 1)); }
+.rail-fill-v { transform-origin: center top; transform: scaleY(var(--rail, 1)); }
+.step-dot { transition: background-color .5s ease, color .5s ease, box-shadow .5s ease; }
+.step-dot:not(.on) { background: var(--color-paper); color: var(--color-ink-mute); }
+.step-dot.on { background: var(--color-wingo); color: var(--color-snow); box-shadow: 0 10px 24px -10px #01b990; }
+.step-dot.on::after {
+  content: ''; position: absolute; inset: -6px; border-radius: 20px; border: 2px solid #01b9908c;
+  animation: ring 2.2s ease-out infinite;
+}
+@keyframes ring { from { transform: scale(.9); opacity: .9; } to { transform: scale(1.4); opacity: 0; } }
+
+/* FAQ: height animates via grid rows */
+.faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(.2,.8,.2,1); }
+.faq-panel > div { overflow: hidden; }
+.faq-open .faq-panel { grid-template-rows: 1fr; }
+.faq-chev { transition: transform .35s ease, background-color .3s ease, color .3s ease; }
+.faq-open .faq-chev { transform: rotate(180deg); }
+
+/* Sticky CTA slides in/out */
+.sticky-cta { transition: translate .6s cubic-bezier(.2,.8,.2,1), opacity .4s ease; translate: 0 130%; opacity: 0; }
+.sticky-cta.show { translate: 0 0; opacity: 1; }
+
+/* Glow sweeping across the footer logo row */
+.sweep { position: relative; overflow: hidden; }
+.sweep::before {
+  content: ''; position: absolute; top: -40%; bottom: -40%; width: 40%; left: -40%; border-radius: 50%;
+  background: radial-gradient(closest-side, #01b99055, transparent); filter: blur(30px);
+  animation: sweep 9s ease-in-out infinite; pointer-events: none;
+}
+@keyframes sweep { 0% { left: -40%; } 50% { left: 100%; } 100% { left: -40%; } }
+
+/* Theme switch: circular reveal from the toggle (View Transitions API) */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* Sections off screen stop their decorative CSS loops */
+.is-idle, .is-idle *, .is-idle *::before, .is-idle *::after { animation-play-state: paused !important; }
+
+/* Reduced motion: static, readable page */
+@media (prefers-reduced-motion: reduce) {
+  .torch, .progress, [data-particles] { display: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .sticky-cta { translate: 0 0; opacity: 1; }
+}

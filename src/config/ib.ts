@@ -4,12 +4,18 @@
 export type OfferMode = 'bonus' | 'account'
 export type AccountKey = 'starter' | 'ecn' | 'pro' | 'goldflex'
 
-export const ACCOUNTS: Record<AccountKey, { name: string; className: string }> = {
-  starter: { name: 'Starter', className: 'acc-starter' },
-  ecn: { name: 'ECN', className: 'acc-ecn' },
-  pro: { name: 'Pro', className: 'acc-pro' },
-  goldflex: { name: 'GoldFlex', className: 'acc-goldflex' },
+// Icons + glow backgrounds are Wingo's own, from wingomarkets.com/en/accounts.
+// TODO_CONFIRM: taglines are draft one-liners, check against Wingo's account descriptions.
+export const ACCOUNTS: Record<AccountKey, { name: string; className: string; icon: string; glow: string; tagline: string }> = {
+  starter: { name: 'Starter', className: 'acc-starter', icon: 'brand/accounts/starter1.svg', glow: 'brand/img/std-main-bg.png', tagline: 'برای شروع' },
+  ecn: { name: 'ECN', className: 'acc-ecn', icon: 'brand/accounts/ecn1.svg', glow: 'brand/img/ecn-main-bg.png', tagline: 'اسپرد خام' },
+  pro: { name: 'Pro', className: 'acc-pro', icon: 'brand/accounts/pro1.svg', glow: 'brand/img/pro-main-bg.png', tagline: 'برای حرفه‌ای‌ها' },
+  goldflex: { name: 'GoldFlex', className: 'acc-goldflex', icon: 'brand/accounts/goldflex-2.svg', glow: 'brand/img/gold-main-bg-1.png', tagline: 'مخصوص طلا' },
 }
+export const ACCOUNT_KEYS = Object.keys(ACCOUNTS) as AccountKey[]
+
+/** Resolve a public/ asset path against Vite's base URL. */
+export const asset = (p: string) => `${import.meta.env.BASE_URL}${p}`
 
 export const ib = {
   name: 'ترانه اکبری', // sample name from the wireframe

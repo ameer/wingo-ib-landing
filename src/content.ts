@@ -4,7 +4,7 @@ import type { OfferMode } from './config/ib'
 
 type Ctx = { account: string; minDeposit: string; deadline: string }
 
-export type Fact = { label: string; value: string }
+export type Fact = { icon: 'account' | 'deposit' | 'deadline' | 'platform'; label: string; value: string }
 export type Step = { title: string; body: string }
 export type Faq = { q: string; a: string }
 
@@ -21,14 +21,14 @@ export function getContent(mode: OfferMode, c: Ctx) {
       : `حساب ${c.account} را بر اساس سبک ترید مخاطبانم انتخاب کرده‌ام. شرایط حساب را وینگو مارکتس تعیین می‌کند؛ من فقط آن را به شما معرفی می‌کنم.`, // TODO_CONFIRM
     facts: (bonus
       ? [
-          { label: 'حساب مشمول', value: c.account },
-          { label: 'حداقل واریز', value: c.minDeposit },
-          { label: 'مهلت استفاده', value: c.deadline },
+          { icon: 'account', label: 'حساب مشمول', value: c.account },
+          { icon: 'deposit', label: 'حداقل واریز', value: c.minDeposit },
+          { icon: 'deadline', label: 'مهلت استفاده', value: c.deadline },
         ]
       : [
-          { label: 'حساب پیشنهادی', value: c.account },
-          { label: 'حداقل واریز', value: c.minDeposit },
-          { label: 'پلتفرم', value: 'متاتریدر ۵' },
+          { icon: 'account', label: 'حساب پیشنهادی', value: c.account },
+          { icon: 'deposit', label: 'حداقل واریز', value: c.minDeposit },
+          { icon: 'platform', label: 'پلتفرم', value: 'متاتریدر ۵' },
         ]) as Fact[],
     offerCta: bonus ? 'مشاهده شرایط و مراحل فعال‌سازی' : 'مشاهده شرایط و مراحل افتتاح حساب',
 
