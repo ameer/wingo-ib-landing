@@ -1,14 +1,16 @@
 import { ArrowUpLeft } from 'lucide-react'
-import { asset, wingoLinks } from '../../config/ib'
+import { asset, ib, wingoLinks } from '../../config/ib'
+import { socials } from '../Socials'
 import { wrap } from '../shared'
 
 export function Footer() {
   const ext = 'inline-flex items-center gap-1 transition-colors hover:text-brand-2'
+  const links = socials()
   return (
     <footer data-site-footer className="relative overflow-hidden bg-night text-snow/65">
       <div data-ft-earth aria-hidden className="earth pointer-events-none absolute -top-40 -left-40 w-[560px]" />
       <div className={`${wrap} relative py-14`}>
-        <div className="grid gap-10 @3xl:grid-cols-[1.4fr_1fr_1fr]">
+        <div className={`grid gap-10 ${links.length ? '@3xl:grid-cols-[1.2fr_1fr_1fr_1fr]' : '@3xl:grid-cols-[1.4fr_1fr_1fr]'}`}>
           <div data-ft-col className="self-start py-2">
             <img src={asset('brand/wingo-logo.png')} alt="Wingo Markets" className="relative h-10 w-auto" width={137} height={40} />
           </div>
@@ -20,6 +22,20 @@ export function Footer() {
               <li><a className={ext} href="#faq">سؤالات متداول</a></li>
             </ul>
           </nav>
+          {links.length > 0 && (
+            <nav data-ft-col aria-label={`ارتباط با ${ib.name}`}>
+              <h2 className="mb-4 font-bold text-snow">ارتباط با {ib.name}</h2>
+              <ul className="space-y-2.5 text-sm">
+                {links.map(({ key, label, handle, href, Icon }) => (
+                  <li key={key}>
+                    <a className={`${ext} gap-2`} href={href} target="_blank" rel="noopener">
+                      <Icon className="size-4" /> {label} <span dir="ltr" className="text-snow/45">@{handle}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
           <nav data-ft-col aria-label="پشتیبانی و اطلاعات حقوقی">
             <h2 className="mb-4 font-bold text-snow">پشتیبانی و اطلاعات حقوقی</h2>
             <ul className="space-y-2.5 text-sm">

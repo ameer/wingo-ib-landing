@@ -15,6 +15,8 @@ npm run preview  # serve dist/ on http://localhost:4173
 
 One build serves every IB. Everything that differs per IB lives in `ib.json`, which sits next to `index.html` in the built site (`public/ib.json` in the source, `dist/ib.json` after a build). To set up or change an IB, edit that file on the server. No rebuild is needed.
 
+`public/ib.json` is the real setup of the first IB (Taraneh Akbari) and is the template for the next ones: copy it and replace the values.
+
 ```json
 {
   "name": "ترانه اکبری",
@@ -22,10 +24,19 @@ One build serves every IB. Everything that differs per IB lives in `ib.json`, wh
   "initials": "ت‌ا",
   "bio": "…",
   "logo": null,
-  "photo": null,
-  "panelUrl": "https://my.wingomarkets.com/register?ib=…",
-  "colors": { "brand": "#ff6a2b", "brandInk": "#210b02" },
-  "offer": { "mode": "bonus", "account": "pro", "minDeposit": "۱۰۰ دلار", "deadline": "۱۰ آذر ۱۴۰۵" }
+  "photo": "taraneh-akbari.webp",
+  "panelUrl": "https://clientx.wingomarkets.com/links/go/1771",
+  "telegram": "iamtarane",
+  "instagram": "tarane.trade",
+  "colors": { "brand": "#1e3a8a", "brandInk": "#ffffff" },
+  "offer": {
+    "mode": "both", "account": "pro",
+    "minDeposit": "۱۰۰ دلار", "start": "۲۸ آبان ۱۴۰۵", "deadline": "۳۰ آذر ۱۴۰۵",
+    "cards": [{ "tag": "آفر اول", "title": "…", "body": "… **bold** …", "cta": "…" }],
+    "termsTitle": "…",
+    "terms": ["…", "…"],
+    "faqs": [{ "q": "…", "a": "…" }]
+  }
 }
 ```
 
@@ -35,15 +46,29 @@ One build serves every IB. Everything that differs per IB lives in `ib.json`, wh
 | `nameLatin` | IB name in the English text in the footer |
 | `initials` | Shown in the header when there is no logo |
 | `bio` | The short introduction under the name |
-| `logo`, `photo` | Image path or URL. A path such as `ib/logo.png` is read from next to `ib.json`. `null` shows a placeholder |
+| `logo`, `photo` | Image file name, path or URL. A name such as `taraneh-akbari.webp` is read from next to `ib.json`. `null` shows a placeholder. Prepare the photo with `npm run photo` (below) |
+| `telegram`, `instagram` | The IB's usernames, with or without `@`. Shown in the header, under the bio, in the footer, and Telegram also in the FAQ ("other question?" then goes to the IB's Telegram instead of Wingo support). `null` or left out hides them |
 | `panelUrl` | The IB's ClientX link, opened by the "continue to the Wingo panel" button. Must start with `https://` |
 | `colors.brand` | The IB's colour: buttons, highlights, the globe and the step markers. Any CSS colour |
 | `colors.brandInk` | Text colour on top of `brand`. Use a dark colour for a light `brand` and white for a dark one |
 | `offer.mode` | Offer type at `/`: `both` (bonus and PRO-account offers side by side, the default), `bonus` or `account` |
 | `offer.account` | Account at `/`: `starter`, `ecn`, `pro` or `goldflex` |
-| `offer.minDeposit`, `offer.deadline` | Shown in the offer card, terms and FAQ |
+| `offer.minDeposit`, `offer.start`, `offer.deadline` | Shown in the offer card, terms and FAQ. Dates are free text (Jalali) |
+| `offer.cards` | The offer cards in `both` mode, in priority order. Each needs `tag`, `title`, `body`, `cta`; `**…**` in `body` is bold |
+| `offer.termsTitle`, `offer.terms` | Heading and paragraphs of the terms section (bonus and `both` modes). Left out: a default built from `start`/`deadline` |
+| `offer.faqs` | IB-specific questions (`q`, `a`), shown after the first FAQ. In `a` (and in `terms` and card `body`), `**…**` is bold and `[text](https://…)` is a link |
 
 Any field can be left out; the page then uses the value built into `src/config/ib.ts`. A value that isn't valid (an unknown account, a colour the browser can't read, a panel link that isn't `https://`) is ignored the same way. If the file is missing or isn't valid JSON, the page still loads with the built-in values and logs a warning in the browser console.
+
+### IB photo
+
+Never upload the original photo; it is usually several MB and slows the page. Run:
+
+```bash
+npm run photo -- path/to/original.png taraneh-akbari
+```
+
+This crops to the hero's 4:5 frame (keeping the face), resizes to 840×1050 and writes `public/taraneh-akbari.webp` (the first IB's 2 MB PNG became 38 KB). Upload that file next to `ib.json` on the server (or keep it in `public/` so the build copies it) and set `"photo": "taraneh-akbari.webp"`.
 
 The page fetches `ib.json` fresh on every visit, bypassing the browser and CDN caches, so an edit shows on the next page load.
 

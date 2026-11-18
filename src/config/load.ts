@@ -1,7 +1,7 @@
 // Reads public/ib.json at startup and merges it over the defaults in ./ib.ts.
 // The file is fetched fresh every time (cache-busting query + no-store), so an edit
 // on the server shows on the next page load, past both browser and CDN caches.
-import { ACCOUNTS, OFFER_MODES, colors, ib, offer, type AccountKey, type OfferMode } from './ib'
+import { ACCOUNTS, OFFER_MODES, colors, ib, offer, type AccountKey, type Faq, type OfferCard, type OfferMode } from './ib'
 
 type Json = Record<string, unknown>
 
@@ -9,6 +9,14 @@ const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : unde
 const strOrNull = (v: unknown) => (v === null ? null : str(v))
 const httpUrl = (v: unknown) => { const s = str(v); return s && /^https?:\/\//.test(s) ? s : undefined }
 const color = (v: unknown) => { const s = str(v); return s && CSS.supports('color', s) ? s : undefined }
+const handle = (v: unknown) => (v === null ? null : str(v)?.replace(/^@/, '').match(/^[\w.]+$/)?.[0])
+const strList = (v: unknown) => { const a = Array.isArray(v) ? v.map(str).filter((x) => x !== undefined) : []; return a.length ? a : undefined }
+/** An array of objects whose `keys` are all non-empty strings; invalid items are dropped. */
+const records = <T,>(v: unknown, keys: (keyof T & string)[]) => {
+  if (!Array.isArray(v)) return undefined
+  const out = v.filter((x): x is T => !!x && typeof x === 'object' && keys.every((k) => str((x as Json)[k])))
+  return out.length ? out : undefined
+}
 const pick = <T extends object>(target: T, values: Partial<Record<keyof T, unknown>>) => {
   for (const [k, v] of Object.entries(values)) if (v !== undefined) (target as Json)[k] = v
 }
@@ -33,6 +41,8 @@ function apply(c: Json) {
     photo: strOrNull(c.photo),
     bio: str(c.bio),
     panelUrl: httpUrl(c.panelUrl),
+    telegram: handle(c.telegram),
+    instagram: handle(c.instagram),
   })
 
   const o = (c.offer ?? {}) as Json
@@ -42,7 +52,12 @@ function apply(c: Json) {
     mode: OFFER_MODES.includes(mode as OfferMode) ? (mode as OfferMode) : undefined,
     account: account && account in ACCOUNTS ? (account as AccountKey) : undefined,
     minDeposit: str(o.minDeposit),
+    start: str(o.start),
     deadline: str(o.deadline),
+    cards: records<OfferCard>(o.cards, ['tag', 'title', 'body', 'cta']),
+    termsTitle: str(o.termsTitle),
+    terms: strList(o.terms),
+    faqs: records<Faq>(o.faqs, ['q', 'a']),
   })
 
   const k = (c.colors ?? {}) as Json

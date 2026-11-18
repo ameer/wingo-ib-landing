@@ -27,16 +27,28 @@ export const ib = {
   nameLatin: 'Taraneh Akbari', // used in the English footer text
   initials: 'ت‌ا',
   logo: null as string | null, // IB logo; null shows the initials mark
-  photo: null as string | null, // IB portrait; null shows the placeholder
-  bio: 'من ترانه اکبری هستم، مهندس و فعال بازارهای مالی. هر روز در لایو ترید و کانال‌های VIP، همراه شما مارکت رو تحلیل می‌کنم و فرصت‌های ترید رو بررسی می‌کنیم. برای اینکه بتونید این روزها با دست بازتری ترید کنید، با همکاری وینگو مارکتس چند آفر ویژه هم براتون در نظر گرفتم که همین‌جا می‌تونید ببینید و فعالشون کنید.',
-  panelUrl: 'https://clientx.wingomarkets.com/links/go/1771', // TODO_CONFIRM: this IB's approved ClientX link
+  photo: null as string | null, // IB portrait (`npm run photo`); null shows the placeholder
+  bio: 'مهندس ترانه اکبری، فعال و متخصص در حوزه بازارهای مالی، با ارائه لایو ترید روزانه و تحلیل‌های تخصصی در کانال‌های VIP، همراه شماست تا با دسترسی به تحلیل‌های حرفه‌ای، بررسی فرصت‌های معاملاتی و مشاهده معاملات زنده، تجربه‌ای آگاهانه‌تر و هدفمندتر از فعالیت در بازارهای مالی داشته باشید.',
+  panelUrl: 'https://clientx.wingomarkets.com/links/go/1771', // this IB's approved ClientX link
+  telegram: null as string | null, // username without @; null hides the Telegram links
+  instagram: null as string | null, // username without @; null hides the Instagram links
 }
+
+/** One card in `both` mode. `**…**` in `body` renders bold. */
+export type OfferCard = { tag: string; title: string; body: string; cta: string }
+export type Faq = { q: string; a: string }
 
 export const offer = {
   mode: 'both' as OfferMode, // offer type shown at /
   account: 'pro' as AccountKey, // account shown at /
-  minDeposit: '۱۰۰ دلار', // TODO_CONFIRM
-  deadline: '۱۰ آذر ۱۴۰۵', // TODO_CONFIRM
+  minDeposit: '۱۰۰ دلار',
+  start: '۲۸ آبان ۱۴۰۵',
+  deadline: '۳۰ آذر ۱۴۰۵',
+  // Optional per-IB copy. null/empty = the defaults in src/content.ts.
+  cards: null as OfferCard[] | null, // `both` mode cards, in priority order
+  termsTitle: null as string | null,
+  terms: null as string[] | null, // paragraphs of the terms section; `**…**` = bold
+  faqs: [] as Faq[], // IB-specific questions, shown after the first FAQ
 }
 
 /** Page colour. `brand` drives buttons, highlights and the globe; `brandInk` is text placed on it. */

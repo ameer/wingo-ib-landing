@@ -1,13 +1,14 @@
 // Page copy, in the IB's first-person voice. Wingo is always third person.
 // Answers marked TODO_CONFIRM are drafts awaiting Wingo compliance sign-off.
-import type { OfferMode } from './config/ib'
+// Offer cards, terms and extra FAQs can be replaced per IB from ib.json (offer.cards,
+// offer.termsTitle, offer.terms, offer.faqs); the text here is the fallback.
+import { ib, offer, type Faq, type OfferCard, type OfferMode } from './config/ib'
 
-type Ctx = { account: string; minDeposit: string; deadline: string }
+type Ctx = { account: string; minDeposit: string; start: string; deadline: string }
 
 export type Fact = { icon: 'account' | 'deposit' | 'deadline' | 'platform'; label: string; value: string }
 export type Step = { title: string; body: string }
-export type Faq = { q: string; a: string }
-export type OfferCard = { tag: string; title: string; body: string; cta: string }
+export type { Faq, OfferCard }
 
 export function getContent(mode: OfferMode, c: Ctx) {
   const both = mode === 'both'
@@ -16,20 +17,20 @@ export function getContent(mode: OfferMode, c: Ctx) {
     heroCta: both ? 'مشاهده آفرهای ویژه' : bonus ? 'مشاهده پیشنهاد اختصاصی' : 'مشاهده حساب پیشنهادی',
 
     // `both` mode: these cards replace the single offer card. **…** = bold.
-    offers: [
+    offers: offer.cards ?? ([
       {
         tag: 'آفر اول',
         title: '۱۰۰٪ بونوس واریز، تا سقف ۱٬۰۰۰ دلار',
-        body: 'با هر واریز به حساب‌های ECN، Starter و PRO وینگو مارکتس، **۱۰۰٪ بونوس تا سقف ۱٬۰۰۰ دلار** دریافت کنید و با اعتبار بیشتری وارد مارکت شوید.',
+        body: 'روی اولین واریز و واریزهای بعدی بین **۱۰۰ تا ۵۰۰ دلار** به حساب‌های Starter، ECN و PRO وینگو مارکتس، **۱۰۰٪ بونوس تا سقف ۱٬۰۰۰ دلار** دریافت کنید و با اعتبار بیشتری وارد مارکت شوید.',
         cta: 'دریافت بونوس ۱۰۰٪',
       },
       {
         tag: 'آفر دوم',
         title: 'حرفه‌ای‌تر ترید کنید، با شرایط ویژه شروع کنید',
-        body: 'حساب PRO وینگو مارکتس را با **۷۰٪ تخفیف** در حداقل واریز فعال کنید؛ فرصتی برای شروع ترید در حساب PRO، تنها با **۱٬۵۰۰ دلار** واریز اولیه.',
+        body: 'حساب PRO وینگو مارکتس را با **۷۰٪ تخفیف** در حداقل واریز فعال کنید؛ شروع ترید در حساب PRO، تنها با **۱٬۵۰۰ دلار** واریز اولیه به‌جای ۵٬۰۰۰ دلار.',
         cta: 'فعال‌سازی حساب PRO',
       },
-    ] as OfferCard[],
+    ] as OfferCard[]),
 
     offerTitle: bonus
       ? `حساب ${c.account} را با بونوس اختصاصی فعال کنید`
@@ -51,12 +52,12 @@ export function getContent(mode: OfferMode, c: Ctx) {
     offerCta: bonus ? 'مشاهده شرایط و مراحل فعال‌سازی' : 'مشاهده شرایط و مراحل افتتاح حساب',
 
     // **…** marks text rendered bold.
-    termsTitle: bonus ? 'فقط ۱۰ روز فرصت دارید این آفر ویژه رو فعال کنید!' : 'شرایط حساب در یک نگاه',
+    termsTitle: bonus ? (offer.termsTitle ?? `فقط تا ${c.deadline} فرصت دارید این آفر ویژه رو فعال کنید!`) : 'شرایط حساب در یک نگاه',
     termsBody: bonus
-      ? [
-          'از **۱ تا ۱۰ آذر ۱۴۰۵** در وینگو مارکتس ثبت‌نام کنید و با افتتاح حساب و واریز وجه، این آفر ویژه رو فعال کنید.',
+      ? (offer.terms ?? [
+          `از **${c.start} تا ${c.deadline}** در وینگو مارکتس ثبت‌نام کنید و با افتتاح حساب و واریز وجه، این آفر ویژه رو فعال کنید.`,
           'فرصت رو از دست ندید؛ همین حالا شروع کنید.',
-        ]
+        ])
       : [
           `حساب ${c.account} با حداقل واریز ${c.minDeposit} روی متاتریدر ۵ افتتاح می‌شود.`,
           'اسپرد، کمیسیون و اهرم این حساب را پیش از واریز در صفحه مقایسه حساب‌های وینگو بررسی کنید.', // TODO_CONFIRM
@@ -71,15 +72,17 @@ export function getContent(mode: OfferMode, c: Ctx) {
         body: 'احراز هویت‌تون رو تکمیل کنید و حساب دلخواهتون رو از بین حساب‌های این آفر انتخاب کنید.',
       },
       bonus
-        ? { title: both ? '۳. واریز و فعال‌سازی آفر' : '۳. واریز و فعال‌سازی بونوس', body: 'مبلغ موردنظرتون رو واریز کنید و برای فعال‌سازی بونوس با مدیر حسابتون در ارتباط باشید.' }
+        ? { title: both ? '۳. واریز و فعال‌سازی آفر' : '۳. واریز و فعال‌سازی بونوس', body: 'مبلغ موردنظرتون رو واریز کنید و برای فعال‌سازی بونوس با مدیر حسابتون یا پشتیبانی وینگو مارکتس در ارتباط باشید.' }
         : { title: 'واریز و شروع ترید', body: 'مبلغ موردنیاز را به حساب واریز کنید و از متاتریدر ۵ وارد بازار شوید.' },
     ] as Step[],
 
     faqs: [
       {
         q: 'اگر درباره حساب، واریز یا برداشت سؤالی داشتم، از چه کسی بپرسم؟',
-        a: 'پشتیبانی فارسی وینگو مارکتس آماده‌ست تا درباره حساب، واریز و برداشت راهنمایی‌تون کنه. می‌تونید سؤال‌هاتون رو از طریق پشتیبانی تلگرام خودم هم بپرسید.',
+        a: 'پشتیبانی فارسی وینگو مارکتس آماده‌ست تا درباره حساب، واریز و برداشت راهنمایی‌تون کنه.' +
+          (ib.telegram ? ` می‌تونید سؤال‌هاتون رو از طریق پشتیبانی تلگرام خودم (⁦[@${ib.telegram}](https://t.me/${ib.telegram})⁩) هم بپرسید.` : ''),
       },
+      ...offer.faqs,
       ...(bonus
         ? [
             {
@@ -92,7 +95,7 @@ export function getContent(mode: OfferMode, c: Ctx) {
             },
             {
               q: 'بونوس چطور فعال می‌شه و شرایط برداشتش چیه؟',
-              a: 'بعد از واریز، برای فعال‌سازی بونوس با مدیر حسابتون در ارتباط باشید. جزئیات شرایط استفاده و برداشت رو هم می‌تونید از مدیر حسابتون بپرسید.'
+              a: 'بعد از واریز، برای فعال‌سازی بونوس با مدیر حسابتون یا پشتیبانی وینگو مارکتس در ارتباط باشید. جزئیات شرایط استفاده و برداشت رو هم می‌تونید از مدیر حسابتون بپرسید.',
             },
           ]
         : [

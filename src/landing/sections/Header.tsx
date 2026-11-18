@@ -1,4 +1,5 @@
 import { ib, asset } from '../../config/ib'
+import { socials } from '../Socials'
 import { ThemeToggle } from '../ThemeToggle'
 import { wrap } from '../shared'
 
@@ -15,6 +16,12 @@ export function Header() {
           </div>
         )}
         <div className="flex items-center gap-3">
+          {socials().map(({ key, label, href, Icon }) => (
+            <a key={key} href={href} target="_blank" rel="noopener" aria-label={label} title={label} className="hidden size-9 @md:grid place-items-center rounded-full text-ink-soft transition-colors hover:bg-brand-soft hover:text-brand-deep">
+              <Icon className="size-[18px]" />
+            </a>
+          ))}
+          {socials().length > 0 && <span aria-hidden className="hidden h-6 w-px bg-line @md:block" />}
           <div className="flex items-center gap-2 text-xs text-ink-mute">
             <span className="hidden @md:inline">همکار</span>
             <img src={asset('brand/wingo-logo-ink.png')} alt="وینگو مارکتس" className="h-7 w-auto dark:hidden" width={96} height={28} />

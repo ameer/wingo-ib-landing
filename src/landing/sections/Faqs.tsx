@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { ArrowUpLeft, ChevronDown, Headset } from 'lucide-react'
-import { wingoLinks } from '../../config/ib'
+import { ib, wingoLinks } from '../../config/ib'
+import { telegramUrl } from '../Socials'
 import type { Faq } from '../../content'
-import { Split, faNum, wrap } from '../shared'
+import { Rich, Split, faNum, wrap } from '../shared'
 
 export function Faqs({ items }: { items: Faq[] }) {
   const [open, setOpen] = useState<number | null>(0)
@@ -10,8 +11,8 @@ export function Faqs({ items }: { items: Faq[] }) {
     <section id="faq" className={`${wrap} scroll-mt-20 py-14 @3xl:py-20`}>
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <h2 data-split className="text-3xl font-black"><Split text="سؤالات متداول" /></h2>
-        <a data-fade href={wingoLinks.support} target="_blank" rel="noopener" className="group inline-flex items-center gap-2 text-sm text-ink-soft hover:text-brand-deep">
-          <Headset className="size-4 text-brand" /> سؤال دیگری دارید؟ <span className="font-bold text-brand-deep">پشتیبانی وینگو</span>
+        <a data-fade href={telegramUrl() ?? wingoLinks.support} target="_blank" rel="noopener" className="group inline-flex items-center gap-2 text-sm text-ink-soft hover:text-brand-deep">
+          <Headset className="size-4 text-brand" /> سؤال دیگری دارید؟ <span className="font-bold text-brand-deep">{ib.telegram ? 'پشتیبانی تلگرام من' : 'پشتیبانی وینگو'}</span>
           <ArrowUpLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
       </div>
@@ -35,7 +36,7 @@ export function Faqs({ items }: { items: Faq[] }) {
                 </button>
               </h3>
               <div id={`faq-${i}`} className="faq-panel" inert={!isOpen}>
-                <div><p className="max-w-[80ch] pr-11 pb-6 leading-8 text-ink-soft">{f.a}</p></div>
+                <div><p className="max-w-[80ch] pr-11 pb-6 leading-8 text-ink-soft"><Rich text={f.a} /></p></div>
               </div>
             </div>
           )

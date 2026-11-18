@@ -18,7 +18,7 @@ type Props = { mode: OfferMode; account: AccountKey }
 
 export function Landing({ mode, account }: Props) {
   const acc = ACCOUNTS[account]
-  const c = getContent(mode, { account: acc.name, minDeposit: offer.minDeposit, deadline: offer.deadline })
+  const c = getContent(mode, { account: acc.name, minDeposit: offer.minDeposit, start: offer.start, deadline: offer.deadline })
   const root = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
