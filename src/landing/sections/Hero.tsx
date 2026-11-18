@@ -1,4 +1,4 @@
-import { ArrowLeft, Camera, Info, UserRound } from 'lucide-react'
+import { ArrowLeft, Camera, UserRound } from 'lucide-react'
 import { asset, ib } from '../../config/ib'
 import { Split, brandBtn, wrap } from '../shared'
 
@@ -13,14 +13,6 @@ export function Hero({ cta }: { cta: string }) {
             <Split text={ib.name} />
           </h1>
           <p data-hero-item className="mt-5 max-w-[56ch] text-lg leading-8 text-ink-soft">{ib.bio}</p>
-
-          <aside data-hero-item className="mt-8 flex max-w-[52ch] gap-3 rounded-2xl border border-line-soft bg-paper p-4 text-sm leading-7 text-ink-soft shadow-[0_10px_30px_-18px_color-mix(in_oklab,var(--color-brand)_40%,transparent)]">
-            <Info aria-hidden className="mt-1 size-5 shrink-0 text-brand" strokeWidth={1.8} />
-            <p>
-              من شریک معرفی‌کننده مستقل وینگو مارکتس هستم و نماینده یا کارمند آن نیستم.
-              بابت معرفی شما ممکن است از وینگو مارکتس کمیسیون دریافت کنم.
-            </p>
-          </aside>
 
           <div data-hero-item className="mt-8">
             <a href="#offer" data-magnetic className={`${brandBtn} glow-pulse`}>
