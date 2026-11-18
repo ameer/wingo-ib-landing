@@ -1,5 +1,5 @@
 import { ArrowUpLeft } from 'lucide-react'
-import { REGISTERED_OFFICE, RISK_WARNING, asset, englishDisclaimer, ib, wingoLinks } from '../../config/ib'
+import { asset, wingoLinks } from '../../config/ib'
 import { wrap } from '../shared'
 
 export function Footer() {
