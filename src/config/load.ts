@@ -1,7 +1,7 @@
 // Reads public/ib.json at startup and merges it over the defaults in ./ib.ts.
 // The file is fetched fresh every time (cache-busting query + no-store), so an edit
 // on the server shows on the next page load, past both browser and CDN caches.
-import { ACCOUNTS, colors, ib, offer, type AccountKey, type OfferMode } from './ib'
+import { ACCOUNTS, OFFER_MODES, colors, ib, offer, type AccountKey, type OfferMode } from './ib'
 
 type Json = Record<string, unknown>
 
@@ -39,7 +39,7 @@ function apply(c: Json) {
   const mode = str(o.mode)
   const account = str(o.account)
   pick(offer, {
-    mode: mode === 'bonus' || mode === 'account' ? (mode as OfferMode) : undefined,
+    mode: OFFER_MODES.includes(mode as OfferMode) ? (mode as OfferMode) : undefined,
     account: account && account in ACCOUNTS ? (account as AccountKey) : undefined,
     minDeposit: str(o.minDeposit),
     deadline: str(o.deadline),
@@ -52,7 +52,7 @@ function apply(c: Json) {
 /** Push the IB's colours and name into the document. */
 function paint() {
   const s = document.documentElement.style
-  s.setProperty('--color-brand', colors.brand)
+  s.setProperty('--ib-brand', colors.brand)
   s.setProperty('--color-brand-ink', colors.brandInk)
   document.title = `${ib.name} · همکار وینگو مارکتس`
 }

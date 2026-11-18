@@ -2,7 +2,9 @@
 // public/ib.json, so each IB's deploy changes that one file and needs no rebuild.
 // TODO_CONFIRM = sample value / draft copy that needs sign-off before publishing.
 
-export type OfferMode = 'bonus' | 'account'
+/** `both` shows the bonus and the PRO-account offers side by side. */
+export type OfferMode = 'both' | 'bonus' | 'account'
+export const OFFER_MODES: OfferMode[] = ['both', 'bonus', 'account']
 export type AccountKey = 'starter' | 'ecn' | 'pro' | 'goldflex'
 
 // Icons + glow backgrounds are Wingo's own, from wingomarkets.com/en/accounts.
@@ -26,21 +28,21 @@ export const ib = {
   initials: 'ت‌ا',
   logo: null as string | null, // IB logo; null shows the initials mark
   photo: null as string | null, // IB portrait; null shows the placeholder
-  bio: 'از ۱۳۹۸ بازار طلا و فارکس را دنبال می‌کنم و تحلیل‌هایم را در کانال تلگرامم منتشر می‌کنم.',
+  bio: 'من ترانه اکبری هستم، مهندس و فعال بازارهای مالی. هر روز در لایو ترید و کانال‌های VIP، همراه شما مارکت رو تحلیل می‌کنم و فرصت‌های ترید رو بررسی می‌کنیم. برای اینکه بتونید این روزها با دست بازتری ترید کنید، با همکاری وینگو مارکتس چند آفر ویژه هم براتون در نظر گرفتم که همین‌جا می‌تونید ببینید و فعالشون کنید.',
   panelUrl: 'https://my.wingomarkets.com/register?ib=SAMPLE', // TODO_CONFIRM: this IB's approved ClientX link
 }
 
 export const offer = {
-  mode: 'bonus' as OfferMode, // offer type shown at /
+  mode: 'both' as OfferMode, // offer type shown at /
   account: 'pro' as AccountKey, // account shown at /
   minDeposit: '۱۰۰ دلار', // TODO_CONFIRM
-  deadline: '۳۰ آذر ۱۴۰۵', // TODO_CONFIRM
+  deadline: '۱۰ آذر ۱۴۰۵', // TODO_CONFIRM
 }
 
 /** Page colour. `brand` drives buttons, highlights and the globe; `brandInk` is text placed on it. */
 export const colors = {
-  brand: '#ff6a2b',
-  brandInk: '#210b02',
+  brand: '#1e3a8a',
+  brandInk: '#ffffff',
 }
 
 /* ── Fixed for every IB ── */

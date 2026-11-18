@@ -23,8 +23,9 @@
 
   /* IB colour. --color-brand / --color-brand-ink are replaced at runtime from ib.json;
      everything else is derived from them, so one value re-themes the page. */
-  --color-brand: #ff6a2b;
-  --color-brand-ink: #210b02;
+  --ib-brand: #1e3a8a;                      /* default; replaced at runtime from ib.json */
+  --color-brand: var(--ib-brand);
+  --color-brand-ink: #ffffff;
   --color-brand-deep: color-mix(in oklab, var(--color-brand) 70%, #000);   /* brand-coloured text on light */
   --color-brand-soft: color-mix(in oklab, var(--color-brand) 12%, var(--color-paper)); /* tinted chips */
   --color-brand-2: color-mix(in oklab, var(--color-brand) 55%, #fff);      /* second stop for gradients */
@@ -38,6 +39,7 @@
 
 [data-theme=dark] {
   color-scheme: dark;
+  --color-brand: color-mix(in oklab, var(--ib-brand) 78%, #fff); /* lifted so the brand stays visible on dark */
   --color-page: #0e0e0e;
   --color-paper: #171717;
   --color-ink: #f5f5f4;
@@ -187,15 +189,6 @@ html.lenis { scroll-behavior: auto !important; }
 /* Sticky CTA slides in/out */
 .sticky-cta { transition: translate .6s cubic-bezier(.2,.8,.2,1), opacity .4s ease; translate: 0 130%; opacity: 0; }
 .sticky-cta.show { translate: 0 0; opacity: 1; }
-
-/* Glow sweeping across the footer logo row */
-.sweep { position: relative; overflow: hidden; }
-.sweep::before {
-  content: ''; position: absolute; top: -40%; bottom: -40%; width: 40%; left: -40%; border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 35%, transparent), transparent); filter: blur(30px);
-  animation: sweep 9s ease-in-out infinite; pointer-events: none;
-}
-@keyframes sweep { 0% { left: -40%; } 50% { left: 100%; } 100% { left: -40%; } }
 
 /* Mini sparkline in the social-trading tile draws itself in */
 .spark { stroke-dasharray: 1; stroke-dashoffset: 0; }

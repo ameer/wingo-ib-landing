@@ -8,6 +8,7 @@ import { Footer } from './sections/Footer'
 import { Header } from './sections/Header'
 import { Hero } from './sections/Hero'
 import { Offer } from './sections/Offer'
+import { Offers } from './sections/Offers'
 import { Steps } from './sections/Steps'
 import { StickyCta } from './sections/StickyCta'
 import { Terms } from './sections/Terms'
@@ -33,10 +34,12 @@ export function Landing({ mode, account }: Props) {
       <Header />
       <main>
         <Hero cta={c.heroCta} />
-        <Offer account={account} title={c.offerTitle} quote={c.offerQuote} facts={c.facts} cta={c.offerCta} />
-        <Terms title={c.termsTitle} body={c.termsBody} link={c.termsLink} />
+        {mode === 'both'
+          ? <Offers items={c.offers} />
+          : <Offer account={account} title={c.offerTitle} quote={c.offerQuote} facts={c.facts} cta={c.offerCta} />}
+        <Terms title={c.termsTitle} body={c.termsBody} cta={c.termsCta} />
         <Steps title={c.stepsTitle} steps={c.steps} />
-        <WhyWingo highlight={account} />
+        <WhyWingo />
         <Faqs items={c.faqs} />
       </main>
       <Footer />

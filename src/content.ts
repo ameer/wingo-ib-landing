@@ -7,11 +7,29 @@ type Ctx = { account: string; minDeposit: string; deadline: string }
 export type Fact = { icon: 'account' | 'deposit' | 'deadline' | 'platform'; label: string; value: string }
 export type Step = { title: string; body: string }
 export type Faq = { q: string; a: string }
+export type OfferCard = { tag: string; title: string; body: string; cta: string }
 
 export function getContent(mode: OfferMode, c: Ctx) {
-  const bonus = mode === 'bonus'
+  const both = mode === 'both'
+  const bonus = mode !== 'account' // `both` reuses the bonus copy outside the offer section
   return {
-    heroCta: bonus ? 'مشاهده پیشنهاد اختصاصی' : 'مشاهده حساب پیشنهادی',
+    heroCta: both ? 'مشاهده آفرهای ویژه' : bonus ? 'مشاهده پیشنهاد اختصاصی' : 'مشاهده حساب پیشنهادی',
+
+    // `both` mode: these cards replace the single offer card. **…** = bold.
+    offers: [
+      {
+        tag: 'آفر اول',
+        title: '۱۰۰٪ بونوس واریز، تا سقف ۱٬۰۰۰ دلار',
+        body: 'با هر واریز به حساب‌های ECN، Starter و PRO وینگو مارکتس، **۱۰۰٪ بونوس تا سقف ۱٬۰۰۰ دلار** دریافت کنید و با اعتبار بیشتری وارد مارکت شوید.',
+        cta: 'دریافت بونوس ۱۰۰٪',
+      },
+      {
+        tag: 'آفر دوم',
+        title: 'حرفه‌ای‌تر ترید کنید، با شرایط ویژه شروع کنید',
+        body: 'حساب PRO وینگو مارکتس را با **۷۰٪ تخفیف** در حداقل واریز فعال کنید؛ فرصتی برای شروع ترید در حساب PRO، تنها با **۱٬۵۰۰ دلار** واریز اولیه.',
+        cta: 'فعال‌سازی حساب PRO',
+      },
+    ] as OfferCard[],
 
     offerTitle: bonus
       ? `حساب ${c.account} را با بونوس اختصاصی فعال کنید`
@@ -32,19 +50,20 @@ export function getContent(mode: OfferMode, c: Ctx) {
         ]) as Fact[],
     offerCta: bonus ? 'مشاهده شرایط و مراحل فعال‌سازی' : 'مشاهده شرایط و مراحل افتتاح حساب',
 
-    termsTitle: bonus ? 'شرایط بونوس در یک نگاه' : 'شرایط حساب در یک نگاه',
+    // **…** marks text rendered bold.
+    termsTitle: bonus ? 'فقط ۱۰ روز فرصت دارید این آفر ویژه رو فعال کنید!' : 'شرایط حساب در یک نگاه',
     termsBody: bonus
       ? [
-          `این پیشنهاد برای حساب ${c.account} و با حداقل واریز ${c.minDeposit} تا ${c.deadline} در دسترس است.`,
-          'پس از انتخاب حساب و واریز وجه، بونوس را مطابق ضوابط همین پیشنهاد فعال کنید.',
+          'از **۱ تا ۱۰ آذر ۱۴۰۵** در وینگو مارکتس ثبت‌نام کنید و با افتتاح حساب و واریز وجه، این آفر ویژه رو فعال کنید.',
+          'فرصت رو از دست ندید؛ همین حالا شروع کنید.',
         ]
       : [
           `حساب ${c.account} با حداقل واریز ${c.minDeposit} روی متاتریدر ۵ افتتاح می‌شود.`,
           'اسپرد، کمیسیون و اهرم این حساب را پیش از واریز در صفحه مقایسه حساب‌های وینگو بررسی کنید.', // TODO_CONFIRM
         ],
-    termsLink: bonus ? 'مشاهده جزئیات شرایط بونوس' : 'مقایسه حساب‌های وینگو',
+    termsCta: bonus ? 'ثبت‌نام و فعال‌سازی آفر' : 'ثبت‌نام و افتتاح حساب',
 
-    stepsTitle: bonus ? 'در ۳ قدم، بونوس‌تون رو فعال کنید' : 'مراحل افتتاح حساب',
+    stepsTitle: both ? 'در ۳ قدم، آفرتون رو فعال کنید' : bonus ? 'در ۳ قدم، بونوس‌تون رو فعال کنید' : 'مراحل افتتاح حساب',
     steps: [
       { title: '۱. ثبت‌نام یا ورود به حساب کاربری', body: 'در وینگو مارکتس ثبت‌نام کنید یا وارد حساب کاربری‌تون بشید.' },
       {
@@ -52,7 +71,7 @@ export function getContent(mode: OfferMode, c: Ctx) {
         body: 'احراز هویت‌تون رو تکمیل کنید و حساب دلخواهتون رو از بین حساب‌های این آفر انتخاب کنید.',
       },
       bonus
-        ? { title: '۳. واریز و فعال‌سازی بونوس', body: 'مبلغ موردنظرتون رو واریز کنید و برای فعال‌سازی بونوس با مدیر حسابتون در ارتباط باشید.' }
+        ? { title: both ? '۳. واریز و فعال‌سازی آفر' : '۳. واریز و فعال‌سازی بونوس', body: 'مبلغ موردنظرتون رو واریز کنید و برای فعال‌سازی بونوس با مدیر حسابتون در ارتباط باشید.' }
         : { title: 'واریز و شروع ترید', body: 'مبلغ موردنیاز را به حساب واریز کنید و از متاتریدر ۵ وارد بازار شوید.' },
     ] as Step[],
 

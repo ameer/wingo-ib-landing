@@ -108,15 +108,16 @@ function headingsAndFades(root: HTMLElement) {
 /* ── Offer: card rises, facts and icons pop, deposit counts up ── */
 
 function offer(root: HTMLElement) {
-  const card = $('[data-offer-card]', root)
-  if (!card) return
-  gsap.set(card, { transformPerspective: 1400 })
-  gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 85%' } })
-    .from(card, { y: 70, rotateX: 10, opacity: 0, duration: 1.2, ease: 'expo.out' })
-    .from($$('[data-fact]', card), { y: 24, opacity: 0, duration: 0.7, stagger: 0.1 }, 0.35)
-    .from($$('[data-fact] [data-icon]', card), { scale: 0, rotate: -60, duration: 0.7, stagger: 0.1, ease: 'back.out(2.2)' }, 0.45)
-    .add(() => $$('[data-count]', card).forEach((n) => countUp(n, 1.3)), 0.5)
-    .from('[data-offer-cta]', { scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(2)' }, 0.7)
+  // One card, or two side by side in `both` mode (the second starts a beat later).
+  $$('[data-offer-card]', root).forEach((card, i) => {
+    gsap.set(card, { transformPerspective: 1400 })
+    gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 85%' }, delay: i * 0.12 })
+      .from(card, { y: 70, rotateX: 10, opacity: 0, duration: 1.2, ease: 'expo.out' })
+      .from($$('[data-fact]', card), { y: 24, opacity: 0, duration: 0.7, stagger: 0.1 }, 0.35)
+      .from($$('[data-fact] [data-icon]', card), { scale: 0, rotate: -60, duration: 0.7, stagger: 0.1, ease: 'back.out(2.2)' }, 0.45)
+      .add(() => $$('[data-count]', card).forEach((n) => countUp(n, 1.3)), 0.5)
+      .from($$('[data-offer-cta]', card), { scale: 0.6, opacity: 0, duration: 0.9, ease: 'back.out(2)' }, 0.7)
+  })
 }
 
 /* ── Steps: rail fills with scroll and lights each dot ── */

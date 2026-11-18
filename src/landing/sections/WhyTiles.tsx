@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { ArrowUpLeft, Copy, Globe, Headset, Layers, Wallet, Zap } from 'lucide-react'
-import { ACCOUNTS, ACCOUNT_KEYS, asset, wingoLinks, type AccountKey } from '../../config/ib'
+import { ACCOUNTS, ACCOUNT_KEYS, asset, wingoLinks } from '../../config/ib'
 
 const tile = 'spot group relative overflow-hidden rounded-3xl bg-paper p-6 ring-1 ring-line-soft transition-shadow duration-500 hover:shadow-[0_30px_60px_-40px_color-mix(in_oklab,var(--color-brand)_60%,transparent)] @3xl:p-7'
 const brandSpot = { '--spot': 'var(--color-brand)' } as CSSProperties
@@ -23,7 +23,7 @@ function Tile({ icon, title, body, art, className = '', ...rest }: {
   )
 }
 
-export function AccountsTile({ highlight }: { highlight: AccountKey }) {
+export function AccountsTile() {
   return (
     <Tile
       icon={<Layers className="size-5" strokeWidth={1.8} />}
@@ -33,13 +33,12 @@ export function AccountsTile({ highlight }: { highlight: AccountKey }) {
         <div className="flex h-full flex-wrap content-end items-end gap-2">
           {ACCOUNT_KEYS.map((k) => {
             const a = ACCOUNTS[k]
-            const on = k === highlight
             return (
               <span
                 key={k}
                 data-acc-card
                 dir="ltr"
-                className={`${a.className} rounded-full px-3.5 py-2 text-sm font-bold ${on ? 'bg-(--acc) text-(--acc-ink)' : 'bg-page text-ink-soft ring-1 ring-line-soft'}`}
+                className="rounded-full bg-page px-3.5 py-2 text-sm font-bold text-ink-soft ring-1 ring-line-soft"
               >
                 {a.name}
               </span>
@@ -51,6 +50,12 @@ export function AccountsTile({ highlight }: { highlight: AccountKey }) {
   )
 }
 
+/** [wick %, body %, body offset %, bullish] */
+const CANDLES: [number, number, number, boolean][] = [
+  [50, 26, 20, false], [60, 32, 22, true], [56, 24, 30, true], [70, 36, 28, false], [66, 30, 34, true],
+  [78, 40, 36, true], [72, 28, 44, false], [88, 44, 44, true], [96, 38, 58, true],
+]
+
 export function MarketsTile() {
   return (
     <Tile
@@ -61,7 +66,21 @@ export function MarketsTile() {
       art={
         <>
           <div className="earth pointer-events-none absolute top-0 left-1/2 w-[85%] -translate-x-1/2 opacity-60" />
-          <img data-mt5 src={asset('brand/img/Metatrader-Mockup.png')} alt="" className="absolute top-3 left-1/2 w-[78%] max-w-none -translate-x-1/2" />
+          {/* Decorative candlestick card, not real data */}
+          <div data-mt5 dir="ltr" className="absolute top-4 left-1/2 w-[78%] -translate-x-1/2 rounded-2xl bg-page p-3 shadow-[0_18px_40px_-18px_color-mix(in_oklab,var(--color-brand)_55%,transparent)] ring-1 ring-line-soft">
+            <div className="flex items-center justify-between text-[11px] font-bold">
+              <span>XAU/USD</span>
+              <span className="rounded-full bg-brand-soft px-2 py-0.5 text-brand-deep">Gold</span>
+            </div>
+            <div className="mt-2 flex h-14 items-end justify-between gap-1.5">
+              {CANDLES.map(([wick, body, off, up], i) => (
+                <span key={i} className="relative flex h-full flex-1 items-end justify-center">
+                  <i className="absolute w-px bg-line" style={{ height: `${wick}%`, bottom: `${off - (wick - body) / 2}%` }} />
+                  <i className={`absolute w-full rounded-[2px] ${up ? 'bg-brand' : 'bg-ink-mute/60'}`} style={{ height: `${body}%`, bottom: `${off}%` }} />
+                </span>
+              ))}
+            </div>
+          </div>
         </>
       }
     />

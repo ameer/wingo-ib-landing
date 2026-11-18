@@ -3,6 +3,7 @@ import { ACCOUNTS, offer, type AccountKey, type OfferMode } from './config/ib'
 
 // Routes (see README):
 //   /                     -> offer type + account from ib.json (offer.mode, offer.account)
+//   /both                 -> bonus + PRO-account offers side by side
 //   /bonus/<account>      -> bonus offer   (starter | ecn | pro | goldflex)
 //   /account/<account>    -> specific-account offer
 function resolveRoute(): { mode: OfferMode; account: AccountKey } | null {
@@ -11,6 +12,7 @@ function resolveRoute(): { mode: OfferMode; account: AccountKey } | null {
   const [mode, acc, ...rest] = path.split('/').filter(Boolean)
 
   if (!mode) return { mode: offer.mode, account: offer.account }
+  if (mode === 'both' && !acc) return { mode, account: offer.account }
   if ((mode === 'bonus' || mode === 'account') && acc && acc in ACCOUNTS && rest.length === 0) {
     return { mode, account: acc as AccountKey }
   }

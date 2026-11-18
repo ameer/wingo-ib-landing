@@ -11,5 +11,7 @@ for (const m of MODES) {
     copyFileSync('dist/index.html', `dist/${m}/${a}/index.html`)
   }
 }
+mkdirSync('dist/both', { recursive: true })
+copyFileSync('dist/index.html', 'dist/both/index.html')
 copyFileSync('dist/index.html', 'dist/404.html')
-console.log(`routes: ${MODES.length * ACCOUNTS.length} pages + 404.html`)
+console.log(`routes: ${MODES.length * ACCOUNTS.length + 1} pages + 404.html`)

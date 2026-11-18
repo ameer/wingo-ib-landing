@@ -25,7 +25,7 @@ One build serves every IB. Everything that differs per IB lives in `ib.json`, wh
   "photo": null,
   "panelUrl": "https://my.wingomarkets.com/register?ib=…",
   "colors": { "brand": "#ff6a2b", "brandInk": "#210b02" },
-  "offer": { "mode": "bonus", "account": "pro", "minDeposit": "۱۰۰ دلار", "deadline": "۳۰ آذر ۱۴۰۵" }
+  "offer": { "mode": "bonus", "account": "pro", "minDeposit": "۱۰۰ دلار", "deadline": "۱۰ آذر ۱۴۰۵" }
 }
 ```
 
@@ -39,7 +39,7 @@ One build serves every IB. Everything that differs per IB lives in `ib.json`, wh
 | `panelUrl` | The IB's ClientX link, opened by the "continue to the Wingo panel" button. Must start with `https://` |
 | `colors.brand` | The IB's colour: buttons, highlights, the globe and the step markers. Any CSS colour |
 | `colors.brandInk` | Text colour on top of `brand`. Use a dark colour for a light `brand` and white for a dark one |
-| `offer.mode` | Offer type at `/`: `bonus` or `account` |
+| `offer.mode` | Offer type at `/`: `both` (bonus and PRO-account offers side by side, the default), `bonus` or `account` |
 | `offer.account` | Account at `/`: `starter`, `ecn`, `pro` or `goldflex` |
 | `offer.minDeposit`, `offer.deadline` | Shown in the offer card, terms and FAQ |
 
@@ -56,6 +56,7 @@ Each combination of offer type and account has its own address. There is no menu
 | Address | Offer type | Account |
 |---|---|---|
 | `/` | Set by `offer.mode` in `ib.json` | Set by `offer.account` in `ib.json` |
+| `/both` | Bonus + PRO account, side by side | Set by `offer.account` (page colour only) |
 | `/bonus/starter` | Exclusive bonus | Starter |
 | `/bonus/ecn` | Exclusive bonus | ECN |
 | `/bonus/pro` | Exclusive bonus | Pro |
@@ -69,7 +70,7 @@ Any other address shows a "page not found" screen with a link back to `/`.
 
 To check the mobile layout, resize the browser or use the device toolbar in DevTools. The page is responsive, so there is no separate mobile page.
 
-**Hosting:** `npm run build` writes a copy of the page at every address above (for example `dist/bonus/pro/index.html`) plus a `404.html`, so a static host such as GitHub Pages serves each address directly. If you add an account, add it to `scripts/routes.mjs` as well as `src/config/ib.ts`.
+**Hosting:** `npm run build` writes a copy of the page at every address above (for example `dist/bonus/pro/index.html`, `dist/both/index.html`) plus a `404.html`, so a static host such as GitHub Pages serves each address directly. If you add an account, add it to `scripts/routes.mjs` as well as `src/config/ib.ts`.
 
 ## Where things live
 
