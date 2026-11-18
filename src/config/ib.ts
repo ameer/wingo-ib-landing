@@ -29,7 +29,7 @@ export const ib = {
   logo: null as string | null, // IB logo; null shows the initials mark
   photo: null as string | null, // IB portrait; null shows the placeholder
   bio: 'من ترانه اکبری هستم، مهندس و فعال بازارهای مالی. هر روز در لایو ترید و کانال‌های VIP، همراه شما مارکت رو تحلیل می‌کنم و فرصت‌های ترید رو بررسی می‌کنیم. برای اینکه بتونید این روزها با دست بازتری ترید کنید، با همکاری وینگو مارکتس چند آفر ویژه هم براتون در نظر گرفتم که همین‌جا می‌تونید ببینید و فعالشون کنید.',
-  panelUrl: 'https://my.wingomarkets.com/register?ib=SAMPLE', // TODO_CONFIRM: this IB's approved ClientX link
+  panelUrl: 'https://clientx.wingomarkets.com/links/go/1771', // TODO_CONFIRM: this IB's approved ClientX link
 }
 
 export const offer = {
@@ -48,7 +48,7 @@ export const colors = {
 /* ── Fixed for every IB ── */
 
 export const wingoLinks = {
-  support: 'https://wingomarkets.com/fa/contact-us',
+  support: 'https://clientx.wingomarkets.com/links/go/1771', //'https://wingomarkets.com/fa/contact-us',
   terms: 'https://wingomarkets.com/dls/documents/Wingo-Markets-Terms-and-Conditions.pdf',
   privacy: 'https://wingomarkets.com/dls/documents/Wingo-Markets-Privacy-Policy.pdf',
   withdrawals: 'https://wingomarkets.com/fa', // TODO_CONFIRM: page listing withdrawal methods & timing

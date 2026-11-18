@@ -23,21 +23,21 @@ export function Footer() {
           <nav data-ft-col aria-label="پشتیبانی و اطلاعات حقوقی">
             <h2 className="mb-4 font-bold text-snow">پشتیبانی و اطلاعات حقوقی</h2>
             <ul className="space-y-2.5 text-sm">
-              <li><a className={ext} href={wingoLinks.support} target="_blank" rel="noopener">تماس با پشتیبانی وینگو <ArrowUpLeft className="size-3.5" /></a></li>
+              <li><a className={ext} href={wingoLinks.support} target="_blank" rel="noopener">پشتیبانی<ArrowUpLeft className="size-3.5" /></a></li>
               <li><a className={ext} href={wingoLinks.terms} target="_blank" rel="noopener">شرایط استفاده از خدمات <ArrowUpLeft className="size-3.5" /></a></li>
               <li><a className={ext} href={wingoLinks.privacy} target="_blank" rel="noopener">سیاست حریم خصوصی <ArrowUpLeft className="size-3.5" /></a></li>
             </ul>
           </nav>
         </div>
 
-        <div className="mt-12 border-t border-night-line pt-8 pb-20 text-xs leading-6">
+        {/* <div className="mt-12 border-t border-night-line pt-8 pb-20 text-xs leading-6">
           <h2 className="mb-2 text-sm font-bold text-snow">هشدار ریسک</h2>
           <p className="max-w-[110ch]">{RISK_WARNING}</p>
           <div dir="ltr" className="mt-6 space-y-2 text-left text-snow/45">
             <p className="font-medium text-snow/65">{REGISTERED_OFFICE}</p>
             <p className="max-w-[110ch]">{englishDisclaimer(ib.nameLatin)}</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </footer>
   )
